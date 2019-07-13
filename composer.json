@@ -9,7 +9,7 @@
 		"test cases"
 	],	
     "require": {
-		"php" : "^7.1",
+		"php" : "^7.2",
         "symfony/dotenv": "^4.3"
     },
 	"require-dev": {
@@ -17,12 +17,12 @@
   	},
 	"autoload": {
         "psr-4": {
-            "99tests\\": "src/"
+            "App\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "99tests\\Tests\\": "tests/"
+            "App\\Tests\\": "tests/"
         }
     }
 }
