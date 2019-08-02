@@ -9,11 +9,14 @@
 		"test cases"
 	],	
     "require": {
-		"php" : "^7.2",
-        "symfony/dotenv": "^4.3"
+		"php" : "^7.0",
+        "symfony/dotenv": "^4.3",
+		"symfony/yaml": "^4.3",
+		"symfony/console": "^4.3",
+		"symfony/phpunit-bridge": "^4.3"
     },
 	"require-dev": {
-    	"phpunit/phpunit": "^5.7"
+    	"phpunit/phpunit": "7.5.14"
   	},
 	"autoload": {
         "psr-4": {

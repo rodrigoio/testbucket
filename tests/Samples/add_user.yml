@@ -1,0 +1,24 @@
+---
+form:
+  name: add_user
+  fields:
+    - field: name
+      domain: TEXT_ALPHA,TEXT_NUMBER
+      rules:
+        - min_length: 3
+        - max_length: 45
+    - field: age
+      domain: INTEGER
+      rules:
+        - min_value: 18
+        - max_value: 65
+    - field: birthday
+      domain: DATE
+      rules:
+        - test: add_user.age
+    - field: accept_terms
+      domain: BOOLEAN
+      rules:
+        - is: true
+        - test: add_user.age
+            majorOrEquals: 18
