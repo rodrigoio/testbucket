@@ -5,7 +5,7 @@ de casos de testes funcionais.
 
 ## Sobre o 99tests
 Esta ferramenta tem por objetivo gerar casos de testes de forma automatizada, a partir da definição de uma especificação
-em notação específica. Esta especificação tem por objetivo determinar domnídios de entrada, correlação entre campos de um 
+em notação YAML. Esta especificação tem por objetivo determinar domínios de entrada, correlação entre campos de um 
 formulário. Bem como regras de negócio e contextos.
 
 Uma vez que temos uma especificação de forma concreta e não subjetiva, podemos aplicar diversas técnicas conhecidas de 
@@ -20,10 +20,12 @@ estudos e avaliações.
 - Camada de domínios nativos
 - Camada de geradores de dados
 - Camada de resultados e formatos de saídas
+- Uso de casos de sucesso como precedentes para casos de testes atuais
+- Testes de estado
 
 #### Observações gerais
 Compreendemos que tanto definições em camadas de especificação, geração de dados e saídas não serão completamente
 atendidas, por tanto elaborar uma interface extensível é sempre a melhor abordagem.
 
 #### Canais:
-Estamos no [slack](https://99testsgroup.slack.com), caso tenha interesse solicite um convite.
+Estamos no [slack](https://join.slack.com/t/99testsgroup/shared_invite/enQtNzE1MjMxNjA0MjI0LTE5MDRkOGU3NGMwM2YzNzA2NzA0YmYzMzE5YjQ3MzE0YjY2NjFkNGExMDgyMjVjZTAxYWQ0Zjc2MTM1N2M2Njc), caso tenha interesse solicite um convite.
