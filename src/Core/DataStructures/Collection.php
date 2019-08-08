@@ -1,13 +1,13 @@
 <?php
 namespace App\Core\DataStructures;
 
-use App\Domain\Element;
-
-interface Collection
+interface Collection extends \IteratorAggregate
 {
     public function isEmpty() : bool;
 
-    public function add(Element $e);
+    public function add($element) : void;
 
-    public function remove(Element $e);
+    public function remove($element) : void;
+
+    public function getIterator() : \ArrayIterator;
 }

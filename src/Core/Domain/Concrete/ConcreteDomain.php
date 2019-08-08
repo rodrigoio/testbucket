@@ -1,9 +1,9 @@
 <?php
-namespace App\Domain;
+namespace App\Core\Domain\Concrete;
 
 use App\Core\DataSource\DataSource;
 
-class StaticValueDomain
+class ConcreteDomain
 {
     private $staticElements;
 

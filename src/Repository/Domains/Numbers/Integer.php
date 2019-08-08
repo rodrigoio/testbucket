@@ -1,9 +1,9 @@
 <?php
 namespace App\Repository\Domains\Numbers;
 
-///use App\Domain\VirtualValueDomain;
+///use App\Domain\VirtualDomain;
 
-class Integer //extends VirtualValueDomain
+class Integer //extends VirtualDomain
 {
     public function equals() {}
 

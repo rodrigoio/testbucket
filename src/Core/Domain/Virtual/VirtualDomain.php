@@ -1,14 +1,18 @@
 <?php
-namespace App\Domain;
+namespace App\Core\Domain\Virtual;
 
-class VirtualValueDomain
+use App\Core\Domain\Domain;
+use App\Core\DataStructures\Collection;
+use App\Core\DataSource\DataSource;
+
+class VirtualDomain implements Domain
 {
     public function __construct(DataSource $dt)
     {
 
     }
 
-    public function has(Element $e) : bool
+    public function has($element) : bool
     {
 
     }

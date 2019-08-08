@@ -1,11 +1,11 @@
 <?php
-namespace App\Domain;
+namespace App\Core\Domain;
+
+use App\Core\DataStructures\Collection;
 
 interface Domain
 {
-    public function __construct(DataSource $dt);
-
-    public function has(Element $e) : bool;
+    public function has($element) : bool;
 
     public function isEmpty() : bool;
 

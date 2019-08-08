@@ -9,7 +9,7 @@
 		"test cases"
 	],	
     "require": {
-		"php" : "^7.0",
+		"php" : "^7.1",
         "symfony/dotenv": "^4.3",
 		"symfony/yaml": "^4.3",
 		"symfony/console": "^4.3",
