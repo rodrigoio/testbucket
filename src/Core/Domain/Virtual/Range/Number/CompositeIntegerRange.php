@@ -42,12 +42,12 @@ class CompositeIntegerRange implements Range,Domain
         // TODO: Implement excludeIntersect() method.
     }
 
-    public function getStartValue()
+    public function getStartValue() : ElementInterface
     {
         // TODO: Implement getStartValue() method.
     }
 
-    public function getEndValue()
+    public function getEndValue() : ElementInterface
     {
         // TODO: Implement getEndValue() method.
     }

@@ -23,7 +23,6 @@ class BaseElementTest extends TestCase
 
 
         $element3 = new Element('value3');
-        print_r($element3);
         $this->assertFalse($element1->equals($element3));
     }
 }

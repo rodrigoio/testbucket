@@ -1,6 +1,7 @@
 <?php
 namespace App\Test\Core\Generator\Range;
 
+use App\Core\Domain\Element\Element;
 use App\Core\Domain\Virtual\Range\Number\IntegerRange;
 use App\Core\Generator\Range\IntegerRangeGenerator;
 use App\Core\DataSource\ConcreteDataSource;
@@ -13,7 +14,7 @@ class IntegerGeneratorTest extends TestCase
 {
     public function testGenerationWithRules()
     {
-        $range = new IntegerRange(new ConcreteDataSource([9, 15]));
+        $range = new IntegerRange(new Element(9), new Element(15));
 
         $generator = new IntegerRangeGenerator($range);
 

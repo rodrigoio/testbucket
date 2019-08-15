@@ -18,8 +18,8 @@ class IntegerRangeGenerator
 
     public function generate()
     {
-        $startValue= $this->range->getStartValue();
-        $endValue  = $this->range->getEndValue();
+        $startValue= $this->range->getStartValue()->getValue();
+        $endValue  = $this->range->getEndValue()->getValue();
 
         //TODO - we need a better solution, soon.
         $case1 = new CaseResult(self::SIGNATURE, [$startValue, $endValue],true);
