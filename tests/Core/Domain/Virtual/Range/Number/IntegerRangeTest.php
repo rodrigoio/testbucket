@@ -1,5 +1,5 @@
 <?php
-namespace App\Test\Core\Domain\Virtual\Range;
+namespace App\Test\Core\Domain\Virtual\Range\Number;
 
 use PHPUnit\Framework\TestCase;
 use App\Core\Domain\Element\Element;
@@ -88,8 +88,11 @@ class IntegerRangeTest extends TestCase
         $rangeB = new IntegerRange(new Element(18), new Element(22));
         $rangeC = $rangeA->add($rangeB);
 
-        $this->assertEquals(1, $rangeC->getStartValue()->getValue());
-        $this->assertEquals(57, $rangeC->getEndValue()->getValue());
+        $this->assertInstanceOf(\App\Core\Domain\Virtual\Range\Number\CompositeIntegerRange::class, $rangeC);
+
+        //TODO: implement Composite first
+        //$this->assertEquals(1, $rangeC->getStartValue()->getValue());
+        //$this->assertEquals(57, $rangeC->getEndValue()->getValue());
     }
 
 //    public function testSubtractDomain()

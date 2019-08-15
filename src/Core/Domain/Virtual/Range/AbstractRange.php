@@ -1,48 +1,31 @@
 <?php
 namespace App\Core\Domain\Virtual\Range;
 
-use App\Core\DataSource\DataSource;
 use App\Core\Domain\Virtual\VirtualDomain;
-use App\Core\Domain\Element\Element;
+use App\Core\Domain\Element\ElementInterface;
 
-class AbstractRange extends VirtualDomain implements Range
+class AbstractRange implements Range
 {
     protected $startValue;
     protected $endValue;
 
-    public function __construct(DataSource $dt)
+    public function __construct(ElementInterface $start, ElementInterface $end)
     {
-        $elements = $dt->getAll()->getIterator();
-        if ($elements->count() != 2) {
-            throw new \InvalidArgumentException("2 elements required, but receive: ".$elements->count());
+        if ( $start->equals($end) && !is_null($start->getValue()) ) {
+            throw new \InvalidArgumentException("Start can not be equals to end value.");
         }
 
-        $this->startValue   = $elements->offsetGet(0);
-        $this->endValue     = $elements->offsetGet(1);
+        $this->startValue   = $start;
+        $this->endValue     = $end;
     }
 
-    public function has($element) : bool
-    {
-        return false;
-    }
-
-    public function getStartValue()
+    public function getStartValue() : ElementInterface
     {
         return $this->startValue;
     }
 
-    public function getEndValue()
+    public function getEndValue() : ElementInterface
     {
         return $this->endValue;
-    }
-
-    public function isStartIncluse() : bool
-    {
-        return $this->startIncluse;
-    }
-
-    public function isEndIncluse() : bool
-    {
-        return $this->endIncluse;
     }
 }

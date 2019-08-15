@@ -26,7 +26,7 @@ class IntegerGeneratorTest extends TestCase
                 $this->assertTrue($case->isSuccess());//TODO - remove after next review
 
                 foreach ($case->getData() as $validInput) {
-                    //TODO - must review the use of this Element interface through the domain - and result test cases.
+                    //TODO - must review the use of this ElementInterface interface through the domain - and result test cases.
                     // $this->assertEquals( $range->has($validInput) );
                 }
             }

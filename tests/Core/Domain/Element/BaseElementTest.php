@@ -1,31 +1,29 @@
 <?php
 namespace App\Test\Core\Domain\Element;
 
-use App\Core\Domain\Element\BaseElement;
+use App\Core\Domain\Element\Element;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Element
+ * @group ElementInterface
  */
 class BaseElementTest extends TestCase
 {
     public function testIfCanCreateNewAbstractElement()
     {
-        $element = new BaseElement('key1', 'value1');
-        $this->assertEquals('key1', $element->getKey());
+        $element = new Element('value1');
         $this->assertEquals('value1', $element->getValue());
     }
 
     public function testIfCanCompareTwoElements()
     {
-        $element1 = new BaseElement('key1', 'value1');
-        $element2 = new BaseElement('key1', 'value1');
+        $element1 = new Element('value1');
+        $element2 = new Element('value1');
         $this->assertTrue($element1->equals($element2));
 
-        $element3 = new BaseElement('key1', 'value3');
-        $this->assertFalse($element1->equals($element3));
 
-        $element4 = new BaseElement('key4', 'value1');
-        $this->assertFalse($element1->equals($element4));
+        $element3 = new Element('value3');
+        print_r($element3);
+        $this->assertFalse($element1->equals($element3));
     }
 }

@@ -1,21 +1,17 @@
 <?php
 namespace App\Core\Domain;
 
-use App\Core\DataStructures\Collection;
+use App\Core\Domain\Element\ElementInterface;
 
 interface Domain
 {
-    public function has($element) : bool;
+    public function has(ElementInterface $element) : bool;
 
-    public function isEmpty() : bool;
+    public function add(Domain $domain) : Domain;
 
-    public function getElements() : Collection;
+    public function subtract(Domain $domain) : Domain;
 
-    public function add(Domain $d);
+    public function intersect(Domain $domain) : Domain;
 
-    public function subtract(Domain $d);
-
-    public function intersect(Domain $d);
-
-    public function excludeIntersect(Domain $d);
+    public function excludeIntersect(Domain $domain) : Domain;
 }
