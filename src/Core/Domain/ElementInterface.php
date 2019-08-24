@@ -1,5 +1,5 @@
 <?php
-namespace App\Core\Domain\Element;
+namespace App\Core\Domain;
 
 interface ElementInterface
 {

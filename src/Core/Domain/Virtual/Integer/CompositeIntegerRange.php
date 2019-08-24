@@ -1,25 +1,29 @@
 <?php
-namespace App\Core\Domain\Virtual\Range\Number;
+namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\Domain;
-use App\Core\Domain\Element\ElementInterface;
-use App\Core\Domain\Virtual\Range\Range;
+use App\Core\Domain\ElementInterface;
+use App\Core\Domain\Virtual\Range;
 
 class CompositeIntegerRange implements Range,Domain
 {
     protected $startValue;
     protected $endValue;
-    protected $ranges;
+    protected $domains;
 
-    public function __construct(\ArrayObject $ranges)
+    public function __construct(\ArrayObject $domains)
     {
-        $this->ranges = $ranges;
+        $this->domains = $domains;
     }
 
-    //TODO: test the use of composite for range domains.
     public function has(ElementInterface $element): bool
     {
-        // TODO: Implement has() method.
+        foreach ($this->domains as $domain) {
+            if ($domain->has($element)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function add(Domain $domain): Domain

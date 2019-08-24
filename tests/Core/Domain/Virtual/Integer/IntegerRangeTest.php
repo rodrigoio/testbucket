@@ -2,11 +2,12 @@
 namespace App\Test\Core\Domain\Virtual\Range\Number;
 
 use PHPUnit\Framework\TestCase;
-use App\Core\Domain\Element\Element;
-use App\Core\Domain\Virtual\Range\Number\IntegerRange;
+use App\Core\Domain\Virtual\Integer\Element;
+use App\Core\Domain\Virtual\Integer\IntegerRange;
+use App\Core\Domain\Virtual\Integer\CompositeIntegerRange;
 
 /**
- * @group IntegerRange
+ * @group Integer
  */
 class IntegerRangeTest extends TestCase
 {
@@ -88,11 +89,17 @@ class IntegerRangeTest extends TestCase
         $rangeB = new IntegerRange(new Element(18), new Element(22));
         $rangeC = $rangeA->add($rangeB);
 
-        $this->assertInstanceOf(\App\Core\Domain\Virtual\Range\Number\CompositeIntegerRange::class, $rangeC);
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
 
-        //TODO: implement Composite first
-        //$this->assertEquals(1, $rangeC->getStartValue()->getValue());
-        //$this->assertEquals(57, $rangeC->getEndValue()->getValue());
+        $this->assertFalse( $rangeC->has(new Element(0)) );
+        $this->assertTrue( $rangeC->has(new Element(1)) );
+        $this->assertTrue( $rangeC->has(new Element(10)) );
+        $this->assertFalse( $rangeC->has(new Element(11)) );
+
+        $this->assertFalse( $rangeC->has(new Element(17)) );
+        $this->assertTrue( $rangeC->has(new Element(18)) );
+        $this->assertTrue( $rangeC->has(new Element(22)) );
+        $this->assertFalse( $rangeC->has(new Element(23)) );
     }
 
 //    public function testSubtractDomain()
@@ -118,7 +125,7 @@ class IntegerRangeTest extends TestCase
                 new Element(2)
             );
         } catch (\InvalidArgumentException $e) {
-            $this->assertEquals('Start can not be equals to end value.', $e->getMessage());
+            $this->assertEquals('[start value] can not be equals to [end value]', $e->getMessage());
         }
     }
 

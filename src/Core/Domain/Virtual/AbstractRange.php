@@ -1,8 +1,7 @@
 <?php
-namespace App\Core\Domain\Virtual\Range;
+namespace App\Core\Domain\Virtual;
 
-use App\Core\Domain\Virtual\VirtualDomain;
-use App\Core\Domain\Element\ElementInterface;
+use App\Core\Domain\ElementInterface;
 
 class AbstractRange implements Range
 {
@@ -12,7 +11,7 @@ class AbstractRange implements Range
     public function __construct(ElementInterface $start, ElementInterface $end)
     {
         if ( $start->equals($end) && !is_null($start->getValue()) ) {
-            throw new \InvalidArgumentException("Start can not be equals to end value.");
+            throw new \InvalidArgumentException("[start value] can not be equals to [end value]");
         }
 
         $this->startValue   = $start;

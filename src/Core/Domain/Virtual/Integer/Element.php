@@ -1,5 +1,7 @@
 <?php
-namespace App\Core\Domain\Element;
+namespace App\Core\Domain\Virtual\Integer;
+
+use App\Core\Domain\ElementInterface;
 
 class Element implements ElementInterface
 {

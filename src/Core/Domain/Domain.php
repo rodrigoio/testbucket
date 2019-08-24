@@ -1,7 +1,7 @@
 <?php
 namespace App\Core\Domain;
 
-use App\Core\Domain\Element\ElementInterface;
+use App\Core\Domain\ElementInterface;
 
 interface Domain
 {

@@ -1,11 +1,10 @@
 <?php
-namespace App\Core\Domain\Virtual\Range\Number;
+namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\Domain;
-use App\Core\DataStructures\Collection;
-use App\Core\Domain\Element\Element;
-use App\Core\Domain\Element\ElementInterface;
-use App\Core\Domain\Virtual\Range\AbstractRange;
+use App\Core\Domain\ElementInterface;
+use App\Core\Domain\Virtual\AbstractRange;
+use App\Core\Domain\Virtual\Integer\CompositeIntegerRange;
 
 class IntegerRange extends AbstractRange implements Domain
 {
@@ -56,17 +55,15 @@ class IntegerRange extends AbstractRange implements Domain
             return new IntegerRange($domain->getStartValue(), $this->getEndValue());
         }
 
-        if ($this->has($domain->getStartValue()) && $this->has($domain->getEndValue())) {
-            return new IntegerRange($this->getStartValue(), $this->getEndValue());
-        }
-
         if ($domain->has($this->getStartValue()) && $domain->has($this->getEndValue())) {
             return new IntegerRange($domain->getStartValue(), $domain->getEndValue());
         }
 
-        if (!$domain->has($this->getStartValue()) && !$domain->has($this->getEndValue())) {
-            return new CompositeIntegerRange(new \ArrayObject([$this, $domain]));
+        if ($this->has($domain->getStartValue()) && $this->has($domain->getEndValue())) {
+            return $this;
         }
+
+        return new CompositeIntegerRange(new \ArrayObject([$this, $domain]));
     }
 
     public function subtract(Domain $domain) : Domain
