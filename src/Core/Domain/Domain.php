@@ -10,8 +10,4 @@ interface Domain
     public function add(Domain $domain) : Domain;
 
     public function subtract(Domain $domain) : Domain;
-
-    public function intersect(Domain $domain) : Domain;
-
-    public function excludeIntersect(Domain $domain) : Domain;
 }

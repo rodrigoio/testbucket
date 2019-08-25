@@ -1,5 +1,5 @@
 <?php
-namespace App\Test\Core\Domain\Virtual\Range\Number;
+namespace App\Test\Core\Domain\Virtual\Integer;
 
 use PHPUnit\Framework\TestCase;
 use App\Core\Domain\Virtual\Integer\Element;
@@ -116,18 +116,6 @@ class IntegerRangeTest extends TestCase
 //    {
 //
 //    }
-
-    public function testInvalidRange()
-    {
-        try {
-            new IntegerRange(
-                new Element(2),
-                new Element(2)
-            );
-        } catch (\InvalidArgumentException $e) {
-            $this->assertEquals('[start value] can not be equals to [end value]', $e->getMessage());
-        }
-    }
 
     public function testInvalidRangeStartValue()
     {

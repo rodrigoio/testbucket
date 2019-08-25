@@ -3,18 +3,21 @@ namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\Domain;
 use App\Core\Domain\ElementInterface;
-use App\Core\Domain\Virtual\AbstractRange;
 use App\Core\Domain\Virtual\Integer\CompositeIntegerRange;
 
-class IntegerRange extends AbstractRange implements Domain
+class IntegerRange implements Domain
 {
+    protected $startValue;
+    protected $endValue;
+
     public function __construct(ElementInterface $start, ElementInterface $end)
     {
         if (!$this->isValid($start) || !$this->isValid($end)) {
             throw new \InvalidArgumentException("The arguments must be integers.");
         }
 
-        parent::__construct($start, $end);
+        $this->startValue = $start;
+        $this->endValue = $end;
     }
 
     public function has(ElementInterface $element) : bool
@@ -72,20 +75,18 @@ class IntegerRange extends AbstractRange implements Domain
         return null;
     }
 
-    public function intersect(Domain $domain) : Domain
-    {
-        // TODO: Implement intersect() method.
-        return null;
-    }
-
-    public function excludeIntersect(Domain $domain) : Domain
-    {
-        // TODO: Implement excludeIntersect() method.
-        return null;
-    }
-
     private function isValid(ElementInterface $element)
     {
         return is_null($element->getValue()) || is_int($element->getValue());
+    }
+
+    public function getStartValue(): ElementInterface
+    {
+        return $this->startValue;
+    }
+
+    public function getEndValue(): ElementInterface
+    {
+        return $this->endValue;
     }
 }

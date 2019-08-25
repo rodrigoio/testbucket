@@ -36,16 +36,6 @@ class CompositeIntegerRange implements Range,Domain
         // TODO: Implement subtract() method.
     }
 
-    public function intersect(Domain $domain): Domain
-    {
-        // TODO: Implement intersect() method.
-    }
-
-    public function excludeIntersect(Domain $domain): Domain
-    {
-        // TODO: Implement excludeIntersect() method.
-    }
-
     public function getStartValue() : ElementInterface
     {
         // TODO: Implement getStartValue() method.
