@@ -125,20 +125,86 @@ class IntegerRangeTest extends TestCase
         $this->assertFalse( $rangeC->has(new Element(23)) );
     }
 
-//    public function testSubtractDomain()
-//    {
-//
-//    }
-//
-//    public function testIntersectDomain()
-//    {
-//
-//    }
-//
-//    public function testExcludeIntersect()
-//    {
-//
-//    }
+    public function testSubtractDomain()
+    {
+        // Starts with rangeA, and rangeB removes a tail of rangeA
+        $rangeA = new IntegerRange(new Element(1), new Element(9));
+        $rangeB = new IntegerRange(new Element(7), new Element(15));
+        $rangeC = $rangeA->subtract($rangeB);
+        //
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
+        $this->assertFalse( $rangeC->has(new Element(0)) );
+        $this->assertTrue( $rangeC->has(new Element(1)) );
+        $this->assertTrue( $rangeC->has(new Element(4)) );
+        $this->assertTrue( $rangeC->has(new Element(6)) );
+        $this->assertFalse( $rangeC->has(new Element(7)) );
+
+        // Starts with rangeB, and rangeB removes the first part of rangeA
+        $rangeA = new IntegerRange(new Element(9), new Element(26));
+        $rangeB = new IntegerRange(new Element(1), new Element(12));
+        $rangeC = $rangeA->subtract($rangeB);
+        //
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
+        $this->assertFalse( $rangeC->has(new Element(12)) );
+        $this->assertTrue( $rangeC->has(new Element(13)) );
+        $this->assertTrue( $rangeC->has(new Element(17)) );
+        $this->assertTrue( $rangeC->has(new Element(26)) );
+        $this->assertFalse( $rangeC->has(new Element(27)) );
+
+        // RangeB covers all rangeA, and the result is an empty domain.
+        $rangeA = new IntegerRange(new Element(5), new Element(8));
+        $rangeB = new IntegerRange(new Element(1), new Element(12));
+        $rangeC = $rangeA->subtract($rangeB);
+        //
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
+        $this->assertFalse( $rangeC->has(new Element(4)) );
+        $this->assertFalse( $rangeC->has(new Element(5)) );
+        $this->assertFalse( $rangeC->has(new Element(6)) );
+        $this->assertFalse( $rangeC->has(new Element(8)) );
+        $this->assertFalse( $rangeC->has(new Element(9)) );
+        $this->assertFalse( $rangeC->has(new Element(0)) );
+        $this->assertFalse( $rangeC->has(new Element(1)) );
+        $this->assertFalse( $rangeC->has(new Element(12)) );
+        $this->assertFalse( $rangeC->has(new Element(13)) );
+
+        // RangeA and rangeB are the same domain, and the result is an empty domain
+        $rangeA = new IntegerRange(new Element(216), new Element(300));
+        $rangeB = new IntegerRange(new Element(216), new Element(300));
+        $rangeC = $rangeA->subtract($rangeB);
+        //
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
+        $this->assertFalse( $rangeC->has(new Element(215)) );
+        $this->assertFalse( $rangeC->has(new Element(216)) );
+        $this->assertFalse( $rangeC->has(new Element(300)) );
+        $this->assertFalse( $rangeC->has(new Element(301)) );
+
+        // RangeA covers all rangeB, and rangeB splits rangeA resulting a composite domain
+        $rangeA = new IntegerRange(new Element(1), new Element(30));
+        $rangeB = new IntegerRange(new Element(12), new Element(21));
+        $rangeC = $rangeA->subtract($rangeB);
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
+        // first part
+        $this->assertFalse( $rangeC->has(new Element(0)) );
+        $this->assertTrue( $rangeC->has(new Element(1)) );
+        $this->assertTrue( $rangeC->has(new Element(11)) );
+        $this->assertFalse( $rangeC->has(new Element(12)) );
+        // second part
+        $this->assertFalse( $rangeC->has(new Element(21)) );
+        $this->assertTrue( $rangeC->has(new Element(22)) );
+        $this->assertTrue( $rangeC->has(new Element(30)) );
+        $this->assertFalse( $rangeC->has(new Element(31)) );
+
+        // RangeA and rangeB never meet each other, so the result is rangeA
+        $rangeA = new IntegerRange(new Element(1), new Element(22));
+        $rangeB = new IntegerRange(new Element(56), new Element(198));
+        $rangeC = $rangeA->subtract($rangeB);
+        //
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
+        $this->assertFalse( $rangeC->has(new Element(0)) );
+        $this->assertTrue( $rangeC->has(new Element(1)) );
+        $this->assertTrue( $rangeC->has(new Element(22)) );
+        $this->assertFalse( $rangeC->has(new Element(23)) );
+    }
 
     public function testInvalidRangeStartValue()
     {

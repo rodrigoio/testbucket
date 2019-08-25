@@ -3,6 +3,7 @@ namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\Domain;
 use App\Core\Domain\ElementInterface;
+use App\Core\Domain\Virtual\Integer\EmptyDomain;
 use App\Core\Domain\Virtual\Integer\CompositeIntegerRange;
 
 class IntegerRange implements Domain
@@ -75,7 +76,52 @@ class IntegerRange implements Domain
 
     public function subtract(Domain $domain) : Domain
     {
-        return null;
+        if (!$domain->has($this->getStartValue()) && $domain->has($this->getEndValue())) {
+            $start  = $this->getStartValue();
+            $end    = $domain->getStartValue();
+
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new IntegerRange($start, $end->prev())
+                ])
+            );
+        }
+
+        if ($domain->has($this->getStartValue()) && !$domain->has($this->getEndValue())) {
+            $start  = $domain->getEndValue();
+            $end    = $this->getEndValue();
+
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new IntegerRange($start->next(), $end)
+                ])
+            );
+        }
+
+        if ($domain->has($this->getStartValue()) && $domain->has($this->getEndValue())) {
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new EmptyDomain()
+                ])
+            );
+        }
+
+        if (
+            $this->has($domain->getStartValue()) && $this->has($domain->getEndValue())
+            &&
+            !$domain->has($this->getStartValue()) && !$domain->has($this->getEndValue())
+        ) {
+            $rangeA = new IntegerRange( $this->getStartValue(), $domain->getStartValue()->prev() );
+            $rangeB = new IntegerRange( $domain->getEndValue()->next(), $this->getEndValue() );
+
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    $rangeA, $rangeB
+                ])
+            );
+        }
+
+        return new CompositeIntegerRange(new \ArrayObject([$this]));
     }
 
     private function isValid(ElementInterface $element)
