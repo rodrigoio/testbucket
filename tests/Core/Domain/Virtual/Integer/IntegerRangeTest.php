@@ -55,6 +55,21 @@ class IntegerRangeTest extends TestCase
         $this->assertFalse( $range->has(new Element(16)) );
     }
 
+    public function testFromInfinityToInfinity()
+    {
+        $range = new IntegerRange(new Element(), new Element());
+
+        $this->assertTrue( $range->has(new Element(-1000)) );
+        $this->assertTrue( $range->has(new Element(-100)) );
+        $this->assertTrue( $range->has(new Element(-10)) );
+        $this->assertTrue( $range->has(new Element(-1)) );
+        $this->assertTrue( $range->has(new Element(0)) );
+        $this->assertTrue( $range->has(new Element(1)) );
+        $this->assertTrue( $range->has(new Element(10)) );
+        $this->assertTrue( $range->has(new Element(100)) );
+        $this->assertTrue( $range->has(new Element(1000)) );
+    }
+
     public function testAddDomain()
     {
         $rangeA = new IntegerRange(new Element(1), new Element(9));

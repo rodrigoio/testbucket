@@ -22,6 +22,10 @@ class IntegerRange implements Domain
 
     public function has(ElementInterface $element) : bool
     {
+        if (is_null($this->startValue->getValue()) && is_null($this->endValue->getValue()) ) {
+            return true;
+        }
+
         if ($this->startValue->equals($element)) {
             return true;
         }
@@ -71,7 +75,6 @@ class IntegerRange implements Domain
 
     public function subtract(Domain $domain) : Domain
     {
-        // TODO: Implement subtract() method.
         return null;
     }
 
