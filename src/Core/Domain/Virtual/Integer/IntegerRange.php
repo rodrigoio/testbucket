@@ -55,6 +55,8 @@ class IntegerRange implements Domain
 
     public function add(Domain $domain) : Domain
     {
+        //TODO - refactory to return composite in all cases.
+        //TODO - implement precision of unity in both operations: add and subtract
         if (!$domain->has($this->getStartValue()) && $domain->has($this->getEndValue())) {
             return new IntegerRange($this->getStartValue(), $domain->getEndValue());
         }
