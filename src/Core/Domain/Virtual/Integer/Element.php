@@ -18,18 +18,18 @@ class Element implements ElementInterface, CalculableInterface
         return $this->value;
     }
 
-    public function equals(ElementInterface $e)
+    public function equals(ElementInterface $e) : bool
     {
         return $e->getValue() === $this->getValue();
     }
 
-    public function next()
+    public function next() : ElementInterface
     {
         $newValue = $this->value;
         return new Element( ++$newValue );
     }
 
-    public function prev()
+    public function prev() : ElementInterface
     {
         $newValue = $this->value;
         return new Element( --$newValue );
