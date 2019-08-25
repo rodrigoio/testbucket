@@ -24,11 +24,11 @@ class EmptyDomain implements Domain, Range
 
     public function getStartValue(): ElementInterface
     {
-        return new Element('E');
+        return new Element();
     }
 
     public function getEndValue(): ElementInterface
     {
-        return new Element('E');
+        return new Element();
     }
 }
