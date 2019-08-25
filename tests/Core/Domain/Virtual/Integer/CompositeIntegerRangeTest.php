@@ -15,14 +15,14 @@ class CompositeIntegerRangeTest extends TestCase
     {
         $range = new IntegerRange( new Element(1), new Element(16) );
 
-        $composed = new CompositeIntegerRange(new \ArrayObject([$range]));
+        $composite = new CompositeIntegerRange(new \ArrayObject([$range]));
 
-        $this->assertFalse( $composed->has( new Element(0) ) );
-        $this->assertTrue( $composed->has( new Element(1) ) );
-        $this->assertTrue( $composed->has( new Element(9) ) );
-        $this->assertTrue( $composed->has( new Element(11) ) );
-        $this->assertTrue( $composed->has( new Element(16) ) );
-        $this->assertFalse( $composed->has( new Element(17) ) );
+        $this->assertFalse( $composite->has( new Element(0) ) );
+        $this->assertTrue( $composite->has( new Element(1) ) );
+        $this->assertTrue( $composite->has( new Element(9) ) );
+        $this->assertTrue( $composite->has( new Element(11) ) );
+        $this->assertTrue( $composite->has( new Element(16) ) );
+        $this->assertFalse( $composite->has( new Element(17) ) );
     }
 
 //    public function testCompositionWithOneUnity()
@@ -45,15 +45,15 @@ class CompositeIntegerRangeTest extends TestCase
         $parts->append($range);
 //        $parts->append($unity);
 
-        $composed = new CompositeIntegerRange( $parts );
+        $composite = new CompositeIntegerRange( $parts );
 
-        $this->assertFalse( $composed->has( new Element(0) ) );
-        $this->assertTrue( $composed->has( new Element(1) ) );
-        $this->assertTrue( $composed->has( new Element(16) ) );
-        $this->assertFalse( $composed->has( new Element(17) ) );
+        $this->assertFalse( $composite->has( new Element(0) ) );
+        $this->assertTrue( $composite->has( new Element(1) ) );
+        $this->assertTrue( $composite->has( new Element(16) ) );
+        $this->assertFalse( $composite->has( new Element(17) ) );
 
-//        $this->assertFalse( $composed->has( new Element(55) ) );
-//        $this->assertTrue( $composed->has( new Element(56) ) );
-//        $this->assertFalse( $composed->has( new Element(57) ) );
+//        $this->assertFalse( $composite->has( new Element(55) ) );
+//        $this->assertTrue( $composite->has( new Element(56) ) );
+//        $this->assertFalse( $composite->has( new Element(57) ) );
     }
 }
