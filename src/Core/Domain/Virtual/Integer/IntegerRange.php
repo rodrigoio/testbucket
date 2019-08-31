@@ -55,25 +55,43 @@ class IntegerRange implements Domain
 
     public function add(Domain $domain) : Domain
     {
-        //TODO - refactory to return composite in all cases.
         //TODO - implement precision of unity in both operations: add and subtract
         if (!$domain->has($this->getStartValue()) && $domain->has($this->getEndValue())) {
-            return new IntegerRange($this->getStartValue(), $domain->getEndValue());
+
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new IntegerRange($this->getStartValue(), $domain->getEndValue())
+                ])
+            );
         }
 
         if ($domain->has($this->getStartValue()) && !$domain->has($this->getEndValue())) {
-            return new IntegerRange($domain->getStartValue(), $this->getEndValue());
+
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new IntegerRange($domain->getStartValue(), $this->getEndValue())
+                ])
+            );
         }
 
         if ($domain->has($this->getStartValue()) && $domain->has($this->getEndValue())) {
-            return new IntegerRange($domain->getStartValue(), $domain->getEndValue());
+
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new IntegerRange($domain->getStartValue(), $domain->getEndValue())
+                ])
+            );
         }
 
         if ($this->has($domain->getStartValue()) && $this->has($domain->getEndValue())) {
-            return $this;
+            return new CompositeIntegerRange(
+                new \ArrayObject([$this])
+            );
         }
 
-        return new CompositeIntegerRange(new \ArrayObject([$this, $domain]));
+        return new CompositeIntegerRange(
+            new \ArrayObject([$this, $domain])
+        );
     }
 
     public function subtract(Domain $domain) : Domain
