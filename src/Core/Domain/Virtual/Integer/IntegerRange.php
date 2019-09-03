@@ -3,10 +3,13 @@ namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\Domain;
 use App\Core\Domain\ElementInterface;
+use App\Core\Domain\ElementCalculable;
+use App\Core\Domain\Virtual\Range;
 use App\Core\Domain\Virtual\Integer\EmptyDomain;
 use App\Core\Domain\Virtual\Integer\CompositeIntegerRange;
+use App\Repository\Domains\Numbers\Integer;
 
-class IntegerRange implements Domain
+class IntegerRange implements Domain,Range
 {
     protected $startValue;
     protected $endValue;
@@ -89,6 +92,22 @@ class IntegerRange implements Domain
             );
         }
 
+        if ( $this->getEndValue()->next()->equals($domain->getStartValue()) ) {
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new IntegerRange( $this->getStartValue(), $domain->getEndValue() )
+                ])
+            );
+        }
+
+        if ( $this->getStartValue()->prev()->equals($domain->getEndValue()) ) {
+            return new CompositeIntegerRange(
+                new \ArrayObject([
+                    new IntegerRange( $domain->getStartValue(), $this->getEndValue() )
+                ])
+            );
+        }
+
         return new CompositeIntegerRange(
             new \ArrayObject([$this, $domain])
         );
@@ -144,17 +163,17 @@ class IntegerRange implements Domain
         return new CompositeIntegerRange(new \ArrayObject([$this]));
     }
 
-    private function isValid(ElementInterface $element)
+    private function isValid(ElementCalculable $element)
     {
         return is_null($element->getValue()) || is_int($element->getValue());
     }
 
-    public function getStartValue(): ElementInterface
+    public function getStartValue(): ElementCalculable
     {
         return $this->startValue;
     }
 
-    public function getEndValue(): ElementInterface
+    public function getEndValue(): ElementCalculable
     {
         return $this->endValue;
     }

@@ -4,6 +4,7 @@ namespace App\Core\Domain\Virtual\Integer;
 use App\Core\Domain\Domain;
 use App\Core\Domain\Virtual\Range;
 use App\Core\Domain\ElementInterface;
+use App\Core\Domain\ElementCalculable;
 
 class EmptyDomain implements Domain, Range
 {
@@ -22,12 +23,12 @@ class EmptyDomain implements Domain, Range
         return $this;
     }
 
-    public function getStartValue(): ElementInterface
+    public function getStartValue(): ElementCalculable
     {
         return new Element();
     }
 
-    public function getEndValue(): ElementInterface
+    public function getEndValue(): ElementCalculable
     {
         return new Element();
     }

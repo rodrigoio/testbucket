@@ -2,9 +2,9 @@
 namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\ElementInterface;
-use App\Core\Domain\CalculableInterface;
+use App\Core\Domain\ElementCalculable;
 
-class Element implements ElementInterface, CalculableInterface
+class Element implements ElementInterface, ElementCalculable
 {
     protected $value;
 
@@ -23,13 +23,13 @@ class Element implements ElementInterface, CalculableInterface
         return $e->getValue() === $this->getValue();
     }
 
-    public function next() : ElementInterface
+    public function next() : ElementCalculable
     {
         $newValue = $this->value;
         return new Element( ++$newValue );
     }
 
-    public function prev() : ElementInterface
+    public function prev() : ElementCalculable
     {
         $newValue = $this->value;
         return new Element( --$newValue );

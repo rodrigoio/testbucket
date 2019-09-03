@@ -3,9 +3,10 @@ namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\Domain;
 use App\Core\Domain\ElementInterface;
+use App\Core\Domain\ElementCalculable;
 use App\Core\Domain\Virtual\Range;
 
-class CompositeIntegerRange implements Range,Domain
+class CompositeIntegerRange implements Domain,Range
 {
     protected $startValue;
     protected $endValue;
@@ -26,6 +27,11 @@ class CompositeIntegerRange implements Range,Domain
         return false;
     }
 
+    public function size()
+    {
+        return count( $this->domains );
+    }
+
     public function add(Domain $domain): Domain
     {
         // TODO: Implement add() method.
@@ -36,12 +42,12 @@ class CompositeIntegerRange implements Range,Domain
         // TODO: Implement subtract() method.
     }
 
-    public function getStartValue() : ElementInterface
+    public function getStartValue() : ElementCalculable
     {
         // TODO: Implement getStartValue() method.
     }
 
-    public function getEndValue() : ElementInterface
+    public function getEndValue() : ElementCalculable
     {
         // TODO: Implement getEndValue() method.
     }

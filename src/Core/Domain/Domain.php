@@ -1,8 +1,6 @@
 <?php
 namespace App\Core\Domain;
 
-use App\Core\Domain\ElementInterface;
-
 interface Domain
 {
     public function has(ElementInterface $element) : bool;

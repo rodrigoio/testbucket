@@ -1,11 +1,11 @@
 <?php
 namespace App\Core\Domain\Virtual;
 
-use App\Core\Domain\ElementInterface;
+use App\Core\Domain\ElementCalculable;
 
 interface Range
 {
-    public function getStartValue() : ElementInterface;
+    public function getStartValue() : ElementCalculable;
 
-    public function getEndValue() : ElementInterface;
+    public function getEndValue() : ElementCalculable;
 }
