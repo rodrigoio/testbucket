@@ -23,9 +23,11 @@ estudos e avaliações.
 - Uso de casos de sucesso como precedentes para casos de testes atuais
 - Testes de estado
 
+Sendo que, atualmente todo o esforço está sendo voltado para a "camada de domínios nativos", temos também alguns esboços para [especificação do domínio de entrada](https://github.com/rodrigoio/99tests/blob/master/tests/Samples/add_user.yml)
+
 #### Observações gerais
 Compreendemos que tanto definições em camadas de especificação, geração de dados e saídas não serão completamente
 atendidas, por tanto elaborar uma interface extensível é sempre a melhor abordagem.
 
 #### Canais:
-Estamos no [slack](https://join.slack.com/t/99testsgroup/shared_invite/enQtNzE1MjMxNjA0MjI0LTE5MDRkOGU3NGMwM2YzNzA2NzA0YmYzMzE5YjQ3MzE0YjY2NjFkNGExMDgyMjVjZTAxYWQ0Zjc2MTM1N2M2Njc), caso tenha interesse solicite um convite.
+Caso tenha interesse neste projeto, mande-nos uma mensagem via [slack](https://join.slack.com/t/99testsgroup/shared_invite/enQtNzE1MjMxNjA0MjI0LTE5MDRkOGU3NGMwM2YzNzA2NzA0YmYzMzE5YjQ3MzE0YjY2NjFkNGExMDgyMjVjZTAxYWQ0Zjc2MTM1N2M2Njc). Toda crítica e sugestão é bem vinda.
