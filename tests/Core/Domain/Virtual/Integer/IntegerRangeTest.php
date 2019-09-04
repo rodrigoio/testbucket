@@ -253,6 +253,16 @@ class IntegerRangeTest extends TestCase
         $this->assertFalse( $rangeC->has(new Element(33)) );
 
         //TODO - use other unity size...
+        $rangeA = new IntegerRange(new Element(1), new Element(8), 2);
+        $rangeB = new IntegerRange(new Element(10), new Element(22));
+        $rangeC = $rangeA->add($rangeB);
+        //
+        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
+        $this->assertEquals(1, $rangeC->size());
+        $this->assertFalse( $rangeC->has(new Element(0)) );
+        $this->assertTrue( $rangeC->has(new Element(1)) );
+        $this->assertTrue( $rangeC->has(new Element(22)) );
+        $this->assertFalse( $rangeC->has(new Element(23)) );
     }
 
     public function testInvalidRangeStartValue()

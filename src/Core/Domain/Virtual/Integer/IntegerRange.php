@@ -13,15 +13,22 @@ class IntegerRange implements Domain,Range
 {
     protected $startValue;
     protected $endValue;
+    protected $precision;
 
-    public function __construct(ElementInterface $start, ElementInterface $end)
+    public function __construct(ElementCalculable $start, ElementCalculable $end, $precision=null)
     {
         if (!$this->isValid($start) || !$this->isValid($end)) {
             throw new \InvalidArgumentException("The arguments must be integers.");
         }
 
-        $this->startValue = $start;
-        $this->endValue = $end;
+        $this->startValue   = $start;
+        $this->endValue     = $end;
+        $this->precision    = $precision;
+
+        if (!is_null($precision)) {
+            $this->startValue->setPrecision($precision);
+            $this->endValue->setPrecision($precision);
+        }
     }
 
     public function has(ElementInterface $element) : bool
