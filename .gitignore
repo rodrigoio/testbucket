@@ -3,3 +3,4 @@ composer.lock
 .idea
 .phpunit.result.cache
 tests/_reports/
+coverage

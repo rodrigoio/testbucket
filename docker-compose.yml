@@ -1,0 +1,26 @@
+version: '3'
+services:
+  99tests:
+    container_name: 99tests
+    build: ./dockerfiles/php
+    volumes:
+      - ./:/code
+    networks:
+      net99tests:
+        ipv4_address: 192.168.0.99
+  99coverage:
+    container_name: 99coverage
+    build: ./dockerfiles/nginx
+    ports:
+      - "99:80"
+    volumes:
+      - ./coverage:/usr/share/nginx/html
+    networks:
+      net99tests:
+        ipv4_address: 192.168.0.98
+networks:
+  net99tests:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
