@@ -32,14 +32,4 @@ class ElementTest extends TestCase
         $this->assertTrue( $element3->equals($after) );
         $this->assertTrue( $element1->equals(new Element(10)) );
     }
-
-    public function testInvalidPrecision()
-    {
-        try {
-            $element1 = new Element(10);
-            $element1->setPrecision('ABC');
-        } catch (\Exception $e) {
-            $this->assertEquals('Precision must be int', $e->getMessage());
-        }
-    }
 }

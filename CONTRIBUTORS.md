@@ -1,0 +1,4 @@
+CONTRIBUTORS
+============
+
+- Rodrigo Oliveira (rodrigoio)

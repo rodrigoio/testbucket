@@ -14,11 +14,13 @@ class EmptyDomainTest extends TestCase
     public function testTheConstantBehaviorOfEmptyDomain()
     {
         $range = new IntegerRange(new Element(1), new Element(10));
-        $domain = new EmptyDomain();
+        $domain = new EmptyDomain(null, null);
 
         $this->assertFalse( $domain->has(new Element(1)) );
         $this->assertEquals(new Element(), $domain->getStartValue());
         $this->assertEquals(new Element(), $domain->getEndValue());
+        $this->assertEquals(1, $domain->countPartitions());
+        $this->assertTrue($domain->reaches($range));
 
         $domainWithoutRange = $domain->subtract($range);
         $this->assertFalse( $domainWithoutRange->has(new Element(1)) );
@@ -28,6 +30,9 @@ class EmptyDomainTest extends TestCase
         // emptyDomain + RangeX = RangeX
         $domainWithRange = $domain->add($range);
 
+        // >- - - -<
+        // <0 1 10 11>
+        // <0 1 10 11>
         $this->assertFalse( $domainWithRange->has(new Element(0)) );
         $this->assertTrue( $domainWithRange->has(new Element(1)) );
         $this->assertTrue( $domainWithRange->has(new Element(10)) );

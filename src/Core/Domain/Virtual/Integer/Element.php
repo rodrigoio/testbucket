@@ -1,18 +1,20 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\ElementInterface;
 use App\Core\Domain\ElementCalculable;
 
-class Element implements ElementInterface, ElementCalculable
+class Element implements ElementCalculable
 {
     protected $value;
     protected $precision;
 
-    public function __construct($value=null)
+    public function __construct(?int $value=null)
     {
         $this->value = $value;
-        $this->precision = 1;
+        $this->setPrecision(1);
     }
 
     public function getValue()
@@ -20,11 +22,8 @@ class Element implements ElementInterface, ElementCalculable
         return $this->value;
     }
 
-    public function setPrecision($precision) : void
+    public function setPrecision(int $precision) : void
     {
-        if (!is_int($precision)) {
-            throw new \InvalidArgumentException("Precision must be int");
-        }
         $this->precision = (int) $precision;
     }
 

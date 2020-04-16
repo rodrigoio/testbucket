@@ -12,7 +12,7 @@ class ConcreteDomainTest extends TestCase
 {
     public function testNewConcreteDomain()
     {
-        $concrete = new ConcreteDomain(new ConcreteDataSource(['test']));
+        $concrete = new ConcreteDomain(new ConcreteDataSource(['test']));//TODO review this type of domain
 
         $this->assertFalse($concrete->isEmpty());
     }

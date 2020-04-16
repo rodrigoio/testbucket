@@ -3,6 +3,9 @@ namespace App\Core\Domain\Concrete;
 
 use App\Core\DataSource\DataSource;
 
+/**
+ * @deprecated
+ */
 class ConcreteDomain
 {
     private $staticElements;

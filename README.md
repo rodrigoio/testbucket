@@ -1,33 +1,38 @@
-# 99tests (provisório)
+99tests
+=======
+99tests is a tool that aims to assist the testing process by generating functional test cases.
 
-Seja bem vindo ao 99tests, uma ferramenta que visa auxiliar o processo de testes por meio da geração
-de casos de testes funcionais.
+About 99tests
+---------------
+This tool aims to generate test cases in an automated way, from the definition of a specification in YAML notation.
+This specification aims to determine input domains, correlation between fields in a form.
+As well as business rules and contexts.
 
-## Sobre o 99tests (provisório)
-Esta ferramenta tem por objetivo gerar casos de testes de forma automatizada, a partir da definição de uma especificação
-em notação YAML. Esta especificação tem por objetivo determinar domínios de entrada, correlação entre campos de um 
-formulário. Bem como regras de negócio e contextos.
+Once we have a specification in a concrete and not subjective way, we can apply several known techniques of
+software tests to actually generate test cases. The scope of this project is limited, for now, to generate integrated
+tests not having a direct relationship with the application code, but with the specification of requirements.
 
-Uma vez que temos uma especificação de forma concreta e não subjetiva, podemos aplicar diversas técnicas conhecidas de 
-testes de software para gerar de fato os casos de testes. O escopo deste projeto se limita, por hora, a testes de 
-alto nível, não tendo relação direta com o código da aplicação, mas sim com a especificação.
+If at any time you have realized how complex it is to deal with test cases, consider contributing to this project.
 
-## Fases Previstas
-Este projeto está em pleno desenvolvimento, e já temos algumas fases previstas e outras que ainda demandam mais
-estudos e avaliações.
-- Camada de especificação
-- Utilitário para uso via terminal
-- Camada de domínios nativos
-- Camada de geradores de dados
-- Camada de resultados e formatos de saídas
-- Uso de casos de sucesso como precedentes para casos de testes atuais
-- Testes de estado
+Expected Phases
+---------------
+This project is in course, and the expected phases are:
 
-Sendo que, atualmente todo o esforço está sendo voltado para a "camada de domínios nativos", temos também alguns esboços para [especificação do domínio de entrada](https://github.com/rodrigoio/99tests/blob/master/tests/Samples/add_user.yml)
+- [Layer of static and virtual domains][0]
+- [Input domain specification layer with YML][1]
+- [Data generation strategies based on static and virtual domains][2]
+- [Implement results layer and output formats][3]
+- [Implement console tool][4]
+- [Specification of state-based tests][5]
 
-#### Observações gerais
-Compreendemos que tanto definições em camadas de especificação, geração de dados e saídas não serão completamente
-atendidas, por tanto elaborar uma interface extensível é sempre a melhor abordagem.
+Contact:
+-------
+If you want to contribute to this project, see the [guidelines][6]
 
-#### Canais:
-Caso tenha interesse neste projeto, mande-nos uma mensagem via [slack](https://join.slack.com/t/99testsgroup/shared_invite/enQtNzE1MjMxNjA0MjI0LTE5MDRkOGU3NGMwM2YzNzA2NzA0YmYzMzE5YjQ3MzE0YjY2NjFkNGExMDgyMjVjZTAxYWQ0Zjc2MTM1N2M2Njc). Toda crítica e sugestão é bem vinda, inclusive um nome melhor!
+[0]: https://github.com/rodrigoio/99tests/issues/16
+[1]: https://github.com/rodrigoio/99tests/issues/17
+[2]: https://github.com/rodrigoio/99tests/issues/18
+[3]: https://github.com/rodrigoio/99tests/issues/19
+[4]: https://github.com/rodrigoio/99tests/issues/20
+[5]: https://github.com/rodrigoio/99tests/issues/21
+[6]: https://github.com/rodrigoio/99tests/blob/master/CONTRIBUTING.md
