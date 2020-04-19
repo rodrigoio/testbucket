@@ -31,17 +31,17 @@ class EmptyDomain implements Range
 
     public function getStartValue(): ElementCalculable
     {
-        return new Element();
+        return new Element(null);
     }
 
     public function getEndValue(): ElementCalculable
     {
-        return new Element();
+        return new Element(null);
     }
 
     public function countPartitions(): int
     {
-        return 1;
+        return 0;
     }
 
     public function reaches(Range $domain): bool

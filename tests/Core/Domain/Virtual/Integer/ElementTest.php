@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use App\Core\Domain\Virtual\Integer\Element;
 
 /**
- * @group Integer
+ * @group integer_range
  */
 class ElementTest extends TestCase
 {

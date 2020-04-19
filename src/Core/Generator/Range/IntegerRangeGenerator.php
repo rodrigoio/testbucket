@@ -22,24 +22,24 @@ class IntegerRangeGenerator
         $endValue  = $this->range->getEndValue()->getValue();
 
         //TODO - we need a better solution, soon.
-        $case1 = new CaseResult(self::SIGNATURE, [$startValue, $endValue],true);
-        $case2 = new CaseResult(self::SIGNATURE, [$startValue, $endValue-1],true);
-        $case3 = new CaseResult(self::SIGNATURE, [$startValue+1, $endValue],true);
+        //$case1 = new CaseResult(self::SIGNATURE, [$startValue, $endValue],true);
+        //$case2 = new CaseResult(self::SIGNATURE, [$startValue, $endValue-1],true);
+        //$case3 = new CaseResult(self::SIGNATURE, [$startValue+1, $endValue],true);
 
         //TODO - at this point we need apply fail cases combination, but not hard coded like this.
         //this commit is just a basement. to start in the combination strategy
-        $case4 = new CaseResult(self::SIGNATURE, [$startValue-1, $endValue],false);
-        $case5 = new CaseResult(self::SIGNATURE, [$startValue, $endValue+1],false);
-        $case6 = new CaseResult(self::SIGNATURE, [$startValue-1, $endValue+1],false);
+        //$case4 = new CaseResult(self::SIGNATURE, [$startValue-1, $endValue],false);
+        //$case5 = new CaseResult(self::SIGNATURE, [$startValue, $endValue+1],false);
+        ///$case6 = new CaseResult(self::SIGNATURE, [$startValue-1, $endValue+1],false);
 
-        $result = new CaseCollection();
-        $result->add($case1);
-        $result->add($case2);
-        $result->add($case3);
-        $result->add($case4);
-        $result->add($case5);
-        $result->add($case6);
+        //$result = new CaseCollection();
+        //$result->add($case1);
+        //$result->add($case2);
+        //$result->add($case3);
+        //$result->add($case4);
+        //$result->add($case5);
+        //$result->add($case6);
 
-        return $result;
+        //return $result;
     }
 }

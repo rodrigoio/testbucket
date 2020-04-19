@@ -6,6 +6,7 @@ namespace App\Core\Domain\Virtual\Integer;
 use App\Core\Domain\ElementInterface;
 use App\Core\Domain\ElementCalculable;
 use App\Core\Domain\Virtual\Range;
+use App\Core\Domain\Virtual\Integer\IntegerRangeList;
 
 class CompositeIntegerRange implements Range
 {
@@ -13,7 +14,7 @@ class CompositeIntegerRange implements Range
 
     public function __construct(?ElementCalculable $start, ?ElementCalculable $end, ?int $precision=1)
     {
-        $this->domains = new \ArrayObject();
+        $this->domains = new IntegerRangeList();
 
         if ($this->isEmptyDomain($start, $end)) {
             $this->add( new EmptyDomain(new Element(), new Element()) );
@@ -24,7 +25,8 @@ class CompositeIntegerRange implements Range
 
     public function has(ElementInterface $element) : bool
     {
-        foreach ($this->domains as $domain) {
+        $iterator = $this->domains->getIterator();
+        foreach ($iterator as $domain) {
             if ($domain->has($element)) {
                 return true;
             }
@@ -32,47 +34,40 @@ class CompositeIntegerRange implements Range
         return false;
     }
 
-    public function add(Range $domain) : Range
+    public function add(Range $outerDomain) : Range
     {
-        if ($this->domains->count() == 0) {
-            $this->domains->append($domain);
-            return $this;
-        }
+        $this->domains->add($outerDomain);
 
-        $notMergedDomain = new \ArrayObject();
-        $mergedDomains = $domain;
+        /*
+        // TODO implement flat logic, after add the outer domain
+        */
 
-        foreach ($this->domains as $current) {
-            if ($mergedDomains->reaches($current)) {
-                $mergedDomains = $mergedDomains->add($current);
-            }
-
-            if (!$mergedDomains->reaches($current)) {
-                $notMergedDomain->append($current);
-            }
-        }
-
-        if ($notMergedDomain->count() > 0) {
-            $notMergedDomain->append($mergedDomains);
-            $this->domains = $notMergedDomain;
-            return $this;
-        }
-
-        return $mergedDomains;
+        return $this;
     }
 
-    public function subtract(Range $domain) : Range
+    public function subtract(Range $outerDomain) : Range
     {
-        // TODO: Implement subtract() method.
-        //        $this->endValue = $end; (update)
-        //        $this->startValue = $start;
+        $iterator = $this->domains->getIterator();
+
+        $subtractedDomainList = new IntegerRangeList();
+
+        foreach ($iterator as $domain) {
+            if ($outerDomain->reaches($domain)) {
+                $subtractedDomain = $domain->subtract($outerDomain);
+                $subtractedDomainList->add($subtractedDomain);
+            }
+        }
+
+        $this->domains = $subtractedDomainList;
+        return $this;
     }
 
     public function getStartValue() : ?ElementCalculable
     {
         $startValue = null;
+        $iterator = $this->domains->getIterator();
 
-        foreach ($this->domains as $domain) {
+        foreach ($iterator as $domain) {
             $currentValue = $domain->getStartValue();
 
             if (is_null($startValue)) {
@@ -84,15 +79,15 @@ class CompositeIntegerRange implements Range
                 $startValue = $currentValue;
             }
         }
-
         return $startValue;
     }
 
     public function getEndValue() : ?ElementCalculable
     {
         $endValue = null;
+        $iterator = $this->domains->getIterator();
 
-        foreach ($this->domains as $domain) {
+        foreach ($iterator as $domain) {
             $currentValue = $domain->getEndValue();
 
             if (is_null($endValue)) {
@@ -120,7 +115,8 @@ class CompositeIntegerRange implements Range
 
     public function reaches(Range $domain) : bool
     {
-        foreach ($this->domains as $oneDomain) {
+        $iterator = $this->domains->getIterator();
+        foreach ($iterator as $oneDomain) {
             if ($oneDomain->reaches($domain)) {
                 return true;
             }

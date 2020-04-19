@@ -3,7 +3,9 @@ namespace App\Core\DataSource;
 
 use App\Core\DataStructures\AbstractCollection;
 
-//TODO - review this structures.
+/**
+ * @deprecated
+ */
 class ElementCollection extends AbstractCollection
 {
     public function add($e) : void

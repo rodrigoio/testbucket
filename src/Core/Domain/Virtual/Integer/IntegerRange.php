@@ -89,32 +89,31 @@ class IntegerRange implements Range
     public function add(Range $domain) : Range
     {
         if ($this->startsWithLocalDomainEndsWithOuterDomain($domain)) {
-            return new CompositeIntegerRange($this->getStartValue(), $domain->getEndValue());
+            return new IntegerRange($this->getStartValue(), $domain->getEndValue());
         }
 
         if ($this->startsWithOuterDomainEndsWithLocalDomain($domain)) {
-            return new CompositeIntegerRange($domain->getStartValue(), $this->getEndValue());
+            return new IntegerRange($domain->getStartValue(), $this->getEndValue());
         }
 
         if ($this->outerDomainContainsLocalDomain($domain)) {
-            return new CompositeIntegerRange($domain->getStartValue(), $domain->getEndValue());
+            return new IntegerRange($domain->getStartValue(), $domain->getEndValue());
         }
 
         if ($this->localDomainContainsOuterDomain($domain)) {
-            return new CompositeIntegerRange($this->getStartValue(), $this->getEndValue());
+            return new IntegerRange($this->getStartValue(), $this->getEndValue());
         }
 
         if ($this->localDomainTouchesOuterDomainFromTheLeft($domain)) {
-            return new CompositeIntegerRange($this->getStartValue(), $domain->getEndValue());
+            return new IntegerRange($this->getStartValue(), $domain->getEndValue());
         }
 
         if ($this->localDomainTouchesOuterDomainFromTheRight($domain)) {
-            return new CompositeIntegerRange($domain->getStartValue(), $this->getEndValue());
+            return new IntegerRange($domain->getStartValue(), $this->getEndValue());
         }
 
         $resultComposite = new CompositeIntegerRange($this->getStartValue(), $this->getEndValue());
-        $resultComposite->add($domain);
-        return $resultComposite;
+        return $resultComposite->add($domain);
     }
 
     public function subtract(Range $domain) : Range
@@ -122,24 +121,21 @@ class IntegerRange implements Range
         if ($this->startsWithLocalDomainEndsWithOuterDomain($domain)) {
             $start  = $this->getStartValue();
             $end    = $domain->getStartValue();
-            return new CompositeIntegerRange($start, $end->prev());
+            return new IntegerRange($start, $end->prev());
         }
 
         if ($this->startsWithOuterDomainEndsWithLocalDomain($domain)) {
             $start  = $domain->getEndValue();
             $end    = $this->getEndValue();
-            return new CompositeIntegerRange($start->next(), $end);
+            return new IntegerRange($start->next(), $end);
         }
 
         if ($this->outerDomainContainsLocalDomain($domain)) {
-            return new CompositeIntegerRange(null, null);
+            return new EmptyDomain(new Element(null), new Element(null));
         }
 
-        if (
-            $this->localDomainContainsOuterDomain($domain) &&
-            !$domain->has($this->getStartValue()) && !$domain->has($this->getEndValue())
-        ) {
-            $rangeA = new IntegerRange( $this->getStartValue(), $domain->getStartValue()->prev() );//TODO review this
+        if ($this->localDomainContainsOuterDomain($domain) && !$this->outerDomainContainsLocalDomain($domain)) {
+            $rangeA = new IntegerRange( $this->getStartValue(), $domain->getStartValue()->prev() );
             $rangeB = new IntegerRange( $domain->getEndValue()->next(), $this->getEndValue() );
 
             $resultComposite = new CompositeIntegerRange($rangeA->getStartValue(), $rangeA->getEndValue());

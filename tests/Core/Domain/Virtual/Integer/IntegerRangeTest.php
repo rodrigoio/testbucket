@@ -7,7 +7,7 @@ use App\Core\Domain\Virtual\Integer\IntegerRange;
 use App\Core\Domain\Virtual\Integer\CompositeIntegerRange;
 
 /**
- * @group Integer
+ * @group integer_range
  */
 class IntegerRangeTest extends TestCase
 {
@@ -77,12 +77,12 @@ class IntegerRangeTest extends TestCase
         // Starts with rangeA, ends with rangeB
         $rangeA = new IntegerRange(new Element(1), new Element(9));
         $rangeB = new IntegerRange(new Element(7), new Element(15));
+        $this->assertTrue( $rangeB->reaches($rangeA) , 'rangeB reaches rangeA');
         $rangeC = $rangeA->add($rangeB);
 
         // 0 <1 7 8 9> 15 16
         // 0 1 <7 8 9 15> 16
         // 0 <1 7 8 9 15> 16
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has( new Element(0) ) );
         $this->assertTrue( $rangeC->has( new Element(1) ) );
         $this->assertTrue( $rangeC->has( new Element(8) ) );
@@ -92,12 +92,12 @@ class IntegerRangeTest extends TestCase
         // Starts with rangeB, ends with rangeA
         $rangeA = new IntegerRange(new Element(15), new Element(18));
         $rangeB = new IntegerRange(new Element(1), new Element(16));
+        $this->assertTrue( $rangeB->reaches($rangeA) , 'rangeB reaches rangeA');
         $rangeC = $rangeA->add($rangeB);
 
         // 0 1 <15 16 18> 19
         // 0 <1 15 16> 18 19
         // 0 <1 15 16 18> 19
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has( new Element(0) ) );
         $this->assertTrue( $rangeC->has( new Element(1) ) );
         $this->assertTrue( $rangeC->has( new Element(18) ) );
@@ -106,13 +106,12 @@ class IntegerRangeTest extends TestCase
         // RangeA covers rangeB
         $rangeA = new IntegerRange(new Element(1), new Element(20));
         $rangeB = new IntegerRange(new Element(5), new Element(17));
-        $this->assertTrue( $rangeA->reaches($rangeB) );
+        $this->assertTrue( $rangeB->reaches($rangeA) , 'rangeB reaches rangeA');
         $rangeC = $rangeA->add($rangeB);
 
         // 0 <1 5 17 20> 21
         // 0 1 <5 17> 20 21
         // 0 <1 5 17 20> 21
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has( new Element(0) ) );
         $this->assertTrue( $rangeC->has( new Element(1) ) );
         $this->assertTrue( $rangeC->has( new Element(20) ) );
@@ -121,12 +120,12 @@ class IntegerRangeTest extends TestCase
         // RangeB covers rangeA
         $rangeA = new IntegerRange(new Element(18), new Element(26));
         $rangeB = new IntegerRange(new Element(-92), new Element(57));
+        $this->assertTrue( $rangeB->reaches($rangeA) , 'rangeB reaches rangeA');
         $rangeC = $rangeA->add($rangeB);
 
         // -92 0 1 <18 26> 57
         // <-92 0 1 18 26 57>
         // <-92 0 1 18 26 57>
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has( new Element(-93) ) );
         $this->assertTrue( $rangeC->has( new Element(-92) ) );
         $this->assertTrue( $rangeC->has( new Element(57) ) );
@@ -135,12 +134,12 @@ class IntegerRangeTest extends TestCase
         // Both ranges are equals
         $rangeA = new IntegerRange(new Element(1), new Element(10));
         $rangeB = new IntegerRange(new Element(1), new Element(10));
+        $this->assertTrue( $rangeB->reaches($rangeA) , 'rangeB reaches rangeA');
         $rangeC = $rangeA->add($rangeB);
 
         // 0 <1 10> 11
         // 0 <1 10> 11
         // 0 <1 10> 11
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has( new Element(0) ) );
         $this->assertTrue( $rangeC->has( new Element(1) ) );
         $this->assertTrue( $rangeC->has( new Element(10) ) );
@@ -149,6 +148,7 @@ class IntegerRangeTest extends TestCase
         // Ranges that never meet each other, result in a composite domain
         $rangeA = new IntegerRange(new Element(1), new Element(10));
         $rangeB = new IntegerRange(new Element(18), new Element(22));
+        $this->assertFalse( $rangeB->reaches($rangeA) , 'rangeB dont reaches rangeA');
         $rangeC = $rangeA->add($rangeB);
 
         // 0 <1 10> 18 22 23
@@ -175,7 +175,6 @@ class IntegerRangeTest extends TestCase
         // 0 <1 6 7 9> 15 16
         // 0 1 6 <7 9 15> 16
         // 0 <1 6> 7 9 15 16
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has(new Element(0)) );
         $this->assertTrue( $rangeC->has(new Element(1)) );
         $this->assertTrue( $rangeC->has(new Element(4)) );
@@ -190,7 +189,6 @@ class IntegerRangeTest extends TestCase
         // 0 1 <9 12 13 26> 27
         // 0 <1 9 12> 13 26 27
         // 0 1 9 12 <13 26> 27
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has(new Element(12)) );
         $this->assertTrue( $rangeC->has(new Element(13)) );
         $this->assertTrue( $rangeC->has(new Element(17)) );
@@ -205,7 +203,6 @@ class IntegerRangeTest extends TestCase
         // 0 1 4 <5 7 8> 11 12 13
         // 0 <1 4 5 7 8 11 12> 13
         // 0 1 4 5 7 8 11 12 13
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has(new Element(4)) );
         $this->assertFalse( $rangeC->has(new Element(5)) );
         $this->assertFalse( $rangeC->has(new Element(6)) );
@@ -224,7 +221,6 @@ class IntegerRangeTest extends TestCase
         // 215 <216 300> 301
         // 215 <216 300> 301
         // 215 216 300 301
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertFalse( $rangeC->has(new Element(215)) );
         $this->assertFalse( $rangeC->has(new Element(216)) );
         $this->assertFalse( $rangeC->has(new Element(300)) );
@@ -271,7 +267,6 @@ class IntegerRangeTest extends TestCase
         $this->assertTrue( $rangeA->reaches($rangeB) );
         $rangeC = $rangeA->add($rangeB);
         //
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertEquals(1, $rangeC->countPartitions());
         $this->assertFalse( $rangeC->has(new Element(0)) );
         $this->assertTrue( $rangeC->has(new Element(1)) );
@@ -282,7 +277,6 @@ class IntegerRangeTest extends TestCase
         $rangeB = new IntegerRange(new Element(1), new Element(24), 1);
         $rangeC = $rangeA->add($rangeB);
         //
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertEquals(1, $rangeC->countPartitions());
         $this->assertFalse( $rangeC->has(new Element(0)) );
         $this->assertTrue( $rangeC->has(new Element(1)) );
@@ -296,7 +290,6 @@ class IntegerRangeTest extends TestCase
         // 0 <1 8> 9 10 22 23
         // 0 1 8 9 <10 22> 23
         // 0 <1 8 9 10 22> 23
-        $this->assertInstanceOf(CompositeIntegerRange::class, $rangeC);
         $this->assertEquals(1, $rangeC->countPartitions());
         $this->assertFalse( $rangeC->has(new Element(0)) );
         $this->assertTrue( $rangeC->has(new Element(1)) );

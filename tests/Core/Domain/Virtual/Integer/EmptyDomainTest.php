@@ -7,7 +7,7 @@ use App\Core\Domain\Virtual\Integer\EmptyDomain;
 use App\Core\Domain\Virtual\Integer\IntegerRange;
 
 /**
- * @group Integer
+ * @group integer_range
  */
 class EmptyDomainTest extends TestCase
 {
@@ -19,7 +19,7 @@ class EmptyDomainTest extends TestCase
         $this->assertFalse( $domain->has(new Element(1)) );
         $this->assertEquals(new Element(), $domain->getStartValue());
         $this->assertEquals(new Element(), $domain->getEndValue());
-        $this->assertEquals(1, $domain->countPartitions());
+        $this->assertEquals(0, $domain->countPartitions());
         $this->assertTrue($domain->reaches($range));
 
         $domainWithoutRange = $domain->subtract($range);
