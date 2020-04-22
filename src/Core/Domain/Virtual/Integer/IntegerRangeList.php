@@ -27,6 +27,13 @@ class IntegerRangeList
         return null;
     }
 
+    public function set(Range $range, int $index) : void
+    {
+        if ($this->list->offsetExists($index)) {
+            $this->list->offsetSet($index, $range);
+        }
+    }
+
     public function count() : int
     {
         return $this->list->count();

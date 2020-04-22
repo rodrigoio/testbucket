@@ -2,13 +2,12 @@
 namespace App\Test\Core\Domain\Virtual\Integer;
 
 use PHPUnit\Framework\TestCase;
-use App\Core\Domain\Virtual\Integer\IntegerRangeList;
-use App\Core\Domain\Virtual\Integer\IntegerRange;
-use App\Core\Domain\Virtual\Integer\CompositeIntegerRange;
 use App\Core\Domain\Virtual\Integer\Element;
+use App\Core\Domain\Virtual\Integer\IntegerRange;
+use App\Core\Domain\Virtual\Integer\IntegerRangeList;
 
 /**
- * @group integer_rangex
+ * @group integer_range
  */
 class IntegerRangeIteratorTest extends TestCase
 {
