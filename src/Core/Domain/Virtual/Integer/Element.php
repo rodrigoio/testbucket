@@ -34,13 +34,26 @@ class Element implements ElementCalculable
 
     public function next() : ElementCalculable
     {
+        if ($this->isInfinity()) {
+            return new Element(null);
+        }
+
         $newValue = $this->value + $this->precision;
         return new Element( $newValue );
     }
 
     public function prev() : ElementCalculable
     {
+        if ($this->isInfinity()) {
+            return new Element(null);
+        }
+
         $newValue = $this->value - $this->precision;
         return new Element( $newValue );
+    }
+
+    public function isInfinity() : bool
+    {
+        return is_null($this->getValue());
     }
 }

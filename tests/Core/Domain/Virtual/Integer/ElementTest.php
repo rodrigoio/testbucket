@@ -32,4 +32,17 @@ class ElementTest extends TestCase
         $this->assertTrue( $element3->equals($after) );
         $this->assertTrue( $element1->equals(new Element(10)) );
     }
+
+    public function testIncrementAndDecrementWithInfinityValue()
+    {
+        $element = new Element(null);
+
+        $this->assertEquals(null, $element->getValue());
+
+        $previousElement = $element->prev();
+        $this->assertEquals(null, $previousElement->getValue());
+
+        $nextElement = $element->next();
+        $this->assertEquals(null, $nextElement->getValue());
+    }
 }

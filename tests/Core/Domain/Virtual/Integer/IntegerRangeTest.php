@@ -10,6 +10,358 @@ use App\Core\Domain\Virtual\Integer\IntegerRange;
  */
 class IntegerRangeTest extends TestCase
 {
+    public function testRangesAreEquals()
+    {
+        $rangeA = new IntegerRange(new Element(9), new Element(15));
+        $rangeB = new IntegerRange(new Element(9), new Element(15));
+        $this->assertTrue( $rangeA->equals($rangeB) );
+    }
+
+    public function testIfEndIsAlwaysMajorThanStart()
+    {
+        $range = new IntegerRange(new Element(9), new Element(15));
+        $this->assertEquals(new Element(9), $range->getStartValue());
+        $this->assertEquals(new Element(15), $range->getEndValue());
+
+        $this->expectException(\InvalidArgumentException::class);
+        $range = new IntegerRange(new Element(100), new Element(0));
+    }
+
+    public function testHasElement()
+    {
+        //--------------------------------------------------------------------
+        // Regular cases
+        //--------------------------------------------------------------------
+        // <1 2> 3 4  5  6 7 8 9
+        // 1  2  3 4 <5> 6 7 8 9
+        $rangeA = new IntegerRange(new Element(1), new Element(2));
+        $this->assertFalse( $rangeA->has(new Element(5)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        //  1  2 <3 4> 5 6 7 8 9
+        // <1> 2  3 4  5 6 7 8 9
+        $rangeA = new IntegerRange(new Element(3), new Element(4));
+        $this->assertFalse( $rangeA->has(new Element(1)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1 <2 3 4 5 6 7 8> 9
+        // 1 2 3 4 5 <6> 7 8 9
+        $rangeA = new IntegerRange(new Element(2), new Element(8));
+        $this->assertTrue( $rangeA->has(new Element(6)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1 <2 3 4 5 6 7 8> 9
+        // 1 <2> 3 4 5 6 7 8 9
+        $rangeA = new IntegerRange(new Element(2), new Element(8));
+        $this->assertTrue( $rangeA->has(new Element(2)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1 <2 3 4 5 6 7 8> 9
+        // 1 2 3 4 5 6 7 <8> 9
+        $rangeA = new IntegerRange(new Element(2), new Element(8));
+        $this->assertTrue( $rangeA->has(new Element(8)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1 <2 3 4 5 6 7 8> 9
+        // 1  2 3 4 5 6 7 8 <9>
+        $rangeA = new IntegerRange(new Element(2), new Element(8));
+        $this->assertFalse( $rangeA->has(new Element(9)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        //  1 <2 3 4 5 6 7 8> 9
+        // <1> 2 3 4 5 6 7 8  9
+        $rangeA = new IntegerRange(new Element(2), new Element(8));
+        $this->assertFalse( $rangeA->has(new Element(1)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        //--------------------------------------------------------------------
+        // Infinity cases
+        //--------------------------------------------------------------------
+        // - - - - >< - - - -
+        $rangeA = new IntegerRange(new Element(null), new Element(null));
+        $this->assertTrue( $rangeA->has(new Element(null)) );
+        $this->assertTrue( $rangeA->has(new Element(0)) );
+        $this->assertTrue( $rangeA->has(new Element(10000)) );
+        $this->assertTrue( $rangeA->has(new Element(-10000)) );
+
+        // 1 2 3 4> 5 6 7 8  9
+        // 1 2 3 4 5 6 7 <8> 9
+        $rangeA = new IntegerRange(new Element(null), new Element(4));
+        $this->assertFalse( $rangeA->has(new Element(8)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1  2  3 4> 5 6 7 8 9
+        // 1 <2> 3 4  5 6 7 8 9
+        $rangeA = new IntegerRange(new Element(null), new Element(4));
+        $this->assertTrue( $rangeA->has(new Element(2)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1  2  3 4 <5 6 7 8 9
+        // 1 <2> 3 4  5 6 7 8 9
+        $rangeA = new IntegerRange(new Element(5), new Element(null));
+        $this->assertFalse( $rangeA->has(new Element(2)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1 2 3 4 <5 6  7  8 9
+        // 1 2 3 4  5 6 <7> 8 9
+        $rangeA = new IntegerRange(new Element(5), new Element(null));
+        $this->assertTrue( $rangeA->has(new Element(7)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1 2 3  4 <5 6 7 8 9
+        // 1 2 3 <4> 5 6 7 8 9
+        $rangeA = new IntegerRange(new Element(5), new Element(null));
+        $this->assertFalse( $rangeA->has(new Element(4)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+
+        // 1 2 3 4> 5  6 7 8 9
+        // 1 2 3 4 <5> 6 7 8 9
+        $rangeA = new IntegerRange(new Element(null), new Element(4));
+        $this->assertFalse( $rangeA->has(new Element(5)) );
+        $this->assertFalse( $rangeA->has(new Element(null)) );
+    }
+
+    public function testDomainRelation()
+    {
+        //--------------------------------------------------------------------
+        // Regular ranges
+        //--------------------------------------------------------------------
+        //startsWithLocalDomainEndsWithOuterDomain
+        $rangeA = new IntegerRange(new Element(10), new Element(30));
+        $rangeB = new IntegerRange(new Element(20), new Element(40));
+        //
+        $this->assertTrue( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //startsWithOuterDomainEndsWithLocalDomain
+        $rangeA = new IntegerRange(new Element(20), new Element(40));
+        $rangeB = new IntegerRange(new Element(10), new Element(30));
+        //
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertTrue( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //outerDomainContainsLocalDomain
+        $rangeA = new IntegerRange(new Element(20), new Element(40));
+        $rangeB = new IntegerRange(new Element(0), new Element(100));
+        //
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainContainsOuterDomain
+        $rangeA = new IntegerRange(new Element(0), new Element(100));
+        $rangeB = new IntegerRange(new Element(40), new Element(50));
+        //
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainTouchesOuterDomainFromTheLeft
+        $rangeA = new IntegerRange(new Element(0), new Element(100), 1);
+        $rangeB = new IntegerRange(new Element(101), new Element(150), 1);
+        //
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainTouchesOuterDomainFromTheRight
+        $rangeA = new IntegerRange(new Element(200), new Element(300), 1);
+        $rangeB = new IntegerRange(new Element(0), new Element(199), 1);
+        //
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertTrue( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //--------------------------------------------------------------------
+        // test with infinity ranges
+        //--------------------------------------------------------------------
+        //startsWithLocalDomainEndsWithOuterDomain
+        $rangeA = new IntegerRange(new Element(null), new Element(30));
+        $rangeB = new IntegerRange(new Element(20), new Element(null));
+        // 0 10  20 30> 40 50
+        // 0 10 <20 30  40 50
+        $this->assertTrue( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //startsWithOuterDomainEndsWithLocalDomain
+        $rangeA = new IntegerRange(new Element(20), new Element(null));
+        $rangeB = new IntegerRange(new Element(null), new Element(30));
+        // 0 10 <20 30  40 50
+        // 0 10  20 30> 40 50
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertTrue( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //outerDomainContainsLocalDomain
+        $rangeA = new IntegerRange(new Element(20), new Element(50));
+        $rangeB = new IntegerRange(new Element(10), new Element(null));
+        // 0  10 <20 30 40 50> 100 200
+        // 0 <10  20 30 40 50  100 200
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //outerDomainContainsLocalDomain
+        $rangeA = new IntegerRange(new Element(20), new Element(50));
+        $rangeB = new IntegerRange(new Element(null), new Element(100));
+        // 0 10 <20 30 40 50> 100
+        // 0 10  20 30 40 50  100>
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //outerDomainContainsLocalDomain
+        $rangeA = new IntegerRange(new Element(0), new Element(100));
+        $rangeB = new IntegerRange(new Element(null), new Element(null));
+        // <0 10 20 30 40 50 100>
+        //          ><
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //outerDomainContainsLocalDomain
+        $rangeA = new IntegerRange(new Element(null), new Element(100));
+        $rangeB = new IntegerRange(new Element(null), new Element(null));
+        // 0 10 20 30 40 50 100>
+        //          ><
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //outerDomainContainsLocalDomain
+        $rangeA = new IntegerRange(new Element(0), new Element(null));
+        $rangeB = new IntegerRange(new Element(null), new Element(null));
+        // <0 10 20 30 40 50
+        //         ><
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainContainsOuterDomain
+        $rangeA = new IntegerRange(new Element(10), new Element(null));
+        $rangeB = new IntegerRange(new Element(20), new Element(50));
+        // 0 <10  20 30 40 50  100 200
+        // 0  10 <20 30 40 50> 100 200
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainContainsOuterDomain
+        $rangeA = new IntegerRange(new Element(null), new Element(100));
+        $rangeB = new IntegerRange(new Element(20), new Element(50));
+        // 0 10  20 30 40 50  100>
+        // 0 10 <20 30 40 50> 100
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainContainsOuterDomain
+        $rangeA = new IntegerRange(new Element(null), new Element(null));
+        $rangeB = new IntegerRange(new Element(0), new Element(100));
+        //          ><
+        // <0 10 20 30 40 50 100>
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainContainsOuterDomain
+        $rangeA = new IntegerRange(new Element(null), new Element(null));
+        $rangeB = new IntegerRange(new Element(null), new Element(100));
+        //          ><
+        // 0 10 20 30 40 50 100>
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainContainsOuterDomain
+        $rangeA = new IntegerRange(new Element(null), new Element(null));
+        $rangeB = new IntegerRange(new Element(0), new Element(null));
+        //         ><
+        // <0 10 20 30 40 50
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainTouchesOuterDomainFromTheLeft
+        $rangeA = new IntegerRange(new Element(null), new Element(100));
+        $rangeB = new IntegerRange(new Element(101), new Element(null));
+        //
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertTrue( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+
+        //localDomainTouchesOuterDomainFromTheRight
+        $rangeA = new IntegerRange(new Element(200), new Element(null));
+        $rangeB = new IntegerRange(new Element(null), new Element(199));
+        //
+        $this->assertFalse( $rangeA->startsWithLocalDomainEndsWithOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->startsWithOuterDomainEndsWithLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->outerDomainContainsLocalDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainContainsOuterDomain($rangeB) );
+        $this->assertFalse( $rangeA->localDomainTouchesOuterDomainFromTheLeft($rangeB) );
+        $this->assertTrue( $rangeA->localDomainTouchesOuterDomainFromTheRight($rangeB) );
+    }
+
     public function testStartAndEndValues()
     {
         $range = new IntegerRange(new Element(9), new Element(15));
@@ -70,7 +422,7 @@ class IntegerRangeTest extends TestCase
         $this->assertTrue( $range->has(new Element(1000)) );
     }
 
-    public function testAddDomain()
+    public function testUnionDomain()
     {
         // Starts with rangeA, ends with rangeB
         $rangeA = new IntegerRange(new Element(1), new Element(9));
@@ -168,6 +520,177 @@ class IntegerRangeTest extends TestCase
         $this->assertTrue( $rangeD->has(new Element(18)) );
         $this->assertTrue( $rangeD->has(new Element(22)) );
         $this->assertFalse( $rangeD->has(new Element(23)) );
+
+        //--------------------------------------------------------------------------
+        // (( Infinity Tests ))
+        //--------------------------------------------------------------------------
+        // infinity over range
+        //       > <
+        // 0 <1 2 3> 4 5 6 7
+        //       > <
+        $rangeA = new IntegerRange(new Element(null), new Element(null));
+        $rangeB = new IntegerRange(new Element(1), new Element(3));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(null, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange->getEndValue()->getValue());
+
+        // range over infinity
+        // 0 <1 2 3 4 5 6> 7
+        //        > <
+        //        > <
+        $rangeA = new IntegerRange(new Element(1), new Element(6));
+        $rangeB = new IntegerRange(new Element(null), new Element(null));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(null, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange->getEndValue()->getValue());
+
+        // infinity from left with range (precision cases)
+        // 0 1 2 3> 4 5 6 7
+        // 0 1 2 3 <4 5 6 7>
+        // 0 1 2 3  4 5 6 7>
+        $rangeA = new IntegerRange(new Element(null), new Element(3));
+        $rangeB = new IntegerRange(new Element(4), new Element(7));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(null, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(7, $resultRange->getEndValue()->getValue());
+
+        // infinity from left with infinity (precision cases)
+        // 0 1 2 3> 4 5 6 7
+        // 0 1 2 3 <4 5 6 7
+        //        ><
+        $rangeA = new IntegerRange(new Element(null), new Element(3));
+        $rangeB = new IntegerRange(new Element(4), new Element(null));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(null, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange->getEndValue()->getValue());
+
+        // infinity from right with range (precision cases)
+        //  0 1 2 3 <4 5 6 7
+        // <0 1 2 3> 4 5 6 7
+        // <0
+        $rangeA = new IntegerRange(new Element(4), new Element(null));
+        $rangeB = new IntegerRange(new Element(0), new Element(3));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(0, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange->getEndValue()->getValue());
+
+        // infinity from right with infinity (precision cases)
+        // 0 1 2 3 <4 5 6 7
+        // 0 1 2 3> 4 5 6 7
+        //        ><
+        $rangeA = new IntegerRange(new Element(4), new Element(null));
+        $rangeB = new IntegerRange(new Element(null), new Element(3));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(null, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange->getEndValue()->getValue());
+
+        // infinity from left with range (cross cases)
+        // 0 1 2  3> 4 5 6 7
+        // 0 1 2 <3  4 5 6 7>
+        // 0 1 2  3  4 5 6 7>
+        $rangeA = new IntegerRange(new Element(null), new Element(3));
+        $rangeB = new IntegerRange(new Element(3), new Element(7));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(null, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(7, $resultRange->getEndValue()->getValue());
+
+        // infinity from left with infinity (cross cases)
+        // 0 1 2  3> 4 5 6 7
+        // 0 1 2 <3  4 5 6 7
+        //        ><
+        $rangeA = new IntegerRange(new Element(null), new Element(3));
+        $rangeB = new IntegerRange(new Element(3), new Element(null));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(null, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange->getEndValue()->getValue());
+
+        // infinity from right with range (cross cases)
+        //  0 1 2 3 <4  5 6 7
+        // <0 1 2 3  4> 5 6 7
+        // <0 1 2 3  4  5 6 7
+        $rangeA = new IntegerRange(new Element(4), new Element(null));
+        $rangeB = new IntegerRange(new Element(0), new Element(4));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(1, $resultList->count());
+        $resultRange = $resultList->get(0);
+        $this->assertEquals(0, $resultRange->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange->getEndValue()->getValue());
+
+        // infinity from left with range (non-cross cases)
+        // 0 1 2 3> 4 5  6 7
+        // 0 1 2 3  4 5 <6 7>
+        // 0 1 2 3> 4 5 <6 7>
+        $rangeA = new IntegerRange(new Element(null), new Element(3));
+        $rangeB = new IntegerRange(new Element(6), new Element(7));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(2, $resultList->count());
+        $resultRange1 = $resultList->get(0);
+        $this->assertEquals(null, $resultRange1->getStartValue()->getValue());
+        $this->assertEquals(3, $resultRange1->getEndValue()->getValue());
+        $resultRange2 = $resultList->get(1);
+        $this->assertEquals(6, $resultRange2->getStartValue()->getValue());
+        $this->assertEquals(7, $resultRange2->getEndValue()->getValue());
+
+        // infinity from left with infinity (non-cross cases)
+        // 0 1 2 3> 4 5  6 7
+        // 0 1 2 3  4 5 <6 7
+        // 0 1 2 3> 4 5 <6 7
+        $rangeA = new IntegerRange(new Element(null), new Element(3));
+        $rangeB = new IntegerRange(new Element(6), new Element(null));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(2, $resultList->count());
+        $resultRange1 = $resultList->get(0);
+        $this->assertEquals(null, $resultRange1->getStartValue()->getValue());
+        $this->assertEquals(3, $resultRange1->getEndValue()->getValue());
+        $resultRange2 = $resultList->get(1);
+        $this->assertEquals(6, $resultRange2->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange2->getEndValue()->getValue());
+
+        // infinity from right with range (non-cross cases)
+        //  0 1 2  3 <4 5 6 7
+        // <0 1 2> 3  4 5 6 7
+        // <0 1 2> 3 <4 5 6 7
+        $rangeA = new IntegerRange(new Element(0), new Element(2));
+        $rangeB = new IntegerRange(new Element(4), new Element(null));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(2, $resultList->count());
+        $resultRange1 = $resultList->get(0);
+        $this->assertEquals(0, $resultRange1->getStartValue()->getValue());
+        $this->assertEquals(2, $resultRange1->getEndValue()->getValue());
+        $resultRange2 = $resultList->get(1);
+        $this->assertEquals(4, $resultRange2->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange2->getEndValue()->getValue());
+
+        // infinity from right with infinity (non-cross cases)
+        // 0 1  2 3 <4 5 6 7
+        // 0 1> 2 3  4 5 6 7
+        // 0 1> 2 3 <4 5 6 7
+        $rangeA = new IntegerRange(new Element(null), new Element(1));
+        $rangeB = new IntegerRange(new Element(4), new Element(null));
+        $resultList = $rangeA->union($rangeB);
+        $this->assertEquals(2, $resultList->count());
+        $resultRange1 = $resultList->get(0);
+        $this->assertEquals(null, $resultRange1->getStartValue()->getValue());
+        $this->assertEquals(1, $resultRange1->getEndValue()->getValue());
+        $resultRange2 = $resultList->get(1);
+        $this->assertEquals(4, $resultRange2->getStartValue()->getValue());
+        $this->assertEquals(null, $resultRange2->getEndValue()->getValue());
     }
 
     public function testSubtractDomain()

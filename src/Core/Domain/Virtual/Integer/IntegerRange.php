@@ -13,8 +13,12 @@ class IntegerRange implements Range
     protected $endValue;
     protected $precision;
 
-    public function __construct(?ElementCalculable $start, ?ElementCalculable $end, ?int $precision=1)
+    public function __construct(ElementCalculable $start, ElementCalculable $end, ?int $precision=1)
     {
+        if (!$this->isValid($start, $end)) {
+            throw new \InvalidArgumentException("Invalid range: [{$start->getValue()}, {$end->getValue()}]");
+        }
+
         $this->startValue = $start;
         $this->endValue = $end;
         $this->precision = $precision;
@@ -27,8 +31,12 @@ class IntegerRange implements Range
 
     public function has(ElementInterface $element) : bool
     {
-        if (is_null($this->startValue->getValue()) && is_null($this->endValue->getValue()) ) {
+        if ($this->startValue->isInfinity() && $this->endValue->isInfinity()) {
             return true;
+        }
+
+        if ($element->isInfinity()) {
+            return false;
         }
 
         if ($this->startValue->equals($element)) {
@@ -40,17 +48,25 @@ class IntegerRange implements Range
         }
 
         if (
-            $this->startValue->getValue() < $element->getValue() &&
+            !$this->startValue->isInfinity() &&
+            $this->endValue->isInfinity() &&
+            $this->startValue->getValue() < $element->getValue()
+        ) {
+            return true;
+        }
+
+        if (
+            $this->startValue->isInfinity() &&
+            !$this->endValue->isInfinity() &&
             $element->getValue() < $this->endValue->getValue()
         ) {
             return true;
         }
 
-        if ($this->startValue->getValue() < $element->getValue() && is_null($this->endValue->getValue())) {
-            return true;
-        }
-
-        if (is_null($this->startValue->getValue()) && $element->getValue() < $this->endValue->getValue() ) {
+        if (
+            $this->startValue->getValue() < $element->getValue() &&
+            $element->getValue() < $this->endValue->getValue()
+        ) {
             return true;
         }
 
@@ -167,33 +183,55 @@ class IntegerRange implements Range
         return $this->endValue;
     }
 
-    private function startsWithLocalDomainEndsWithOuterDomain(Range $domain): bool
+    public function startsWithLocalDomainEndsWithOuterDomain(Range $outerDomain): bool
     {
-        return !$domain->has($this->getStartValue()) && $domain->has($this->getEndValue());
+        return !$outerDomain->has($this->getStartValue()) && $outerDomain->has($this->getEndValue());
     }
 
-    private function startsWithOuterDomainEndsWithLocalDomain(Range $domain): bool
+    public function startsWithOuterDomainEndsWithLocalDomain(Range $outerDomain): bool
     {
-        return $domain->has($this->getStartValue()) && !$domain->has($this->getEndValue());
+        return $outerDomain->has($this->getStartValue()) && !$outerDomain->has($this->getEndValue());
     }
 
-    private function outerDomainContainsLocalDomain(Range $domain): bool
+    public function outerDomainContainsLocalDomain(Range $outerDomain): bool
     {
-        return $domain->has($this->getStartValue()) && $domain->has($this->getEndValue());
+        return $outerDomain->has($this->getStartValue()) && $outerDomain->has($this->getEndValue());
     }
 
-    private function localDomainContainsOuterDomain(Range $domain): bool
+    public function localDomainContainsOuterDomain(Range $outerDomain): bool
     {
-        return $this->has($domain->getStartValue()) && $this->has($domain->getEndValue());
+        return $this->has($outerDomain->getStartValue()) && $this->has($outerDomain->getEndValue());
     }
 
-    private function localDomainTouchesOuterDomainFromTheLeft(Range $domain): bool
+    public function localDomainTouchesOuterDomainFromTheLeft(Range $outerDomain): bool
     {
-        return $this->getEndValue()->next()->equals($domain->getStartValue());
+        return
+            !$this->getEndValue()->isInfinity() &&
+            $this->getEndValue()->next()->equals($outerDomain->getStartValue());
     }
 
-    private function localDomainTouchesOuterDomainFromTheRight(Range $domain): bool
+    public function localDomainTouchesOuterDomainFromTheRight(Range $outerDomain): bool
     {
-        return $this->getStartValue()->prev()->equals($domain->getEndValue());
+        return
+            !$this->getStartValue()->isInfinity() &&
+            $this->getStartValue()->prev()->equals($outerDomain->getEndValue());
+    }
+
+    private function isValid(ElementCalculable $start, ElementCalculable $end): bool
+    {
+        if (is_null($start->getValue()) || is_null($end->getValue())) {
+            return true;
+        }
+
+        if ($start->getValue() > $end->getValue()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function equals(Range $domain) : bool
+    {
+        return $this->getStartValue()->getValue() === $domain->getStartValue()->getValue() &&
+        $this->getEndValue()->getValue() === $domain->getEndValue()->getValue();
     }
 }

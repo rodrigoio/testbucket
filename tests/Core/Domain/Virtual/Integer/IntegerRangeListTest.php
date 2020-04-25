@@ -31,5 +31,9 @@ class IntegerRangeListTest extends TestCase
         $this->assertEquals(3 , $list->count());
         $this->assertEquals(90, $range->getStartValue()->getValue());
         $this->assertEquals(100, $range->getEndValue()->getValue());
+
+        $range = $list->last();
+        $this->assertEquals(90, $range->getStartValue()->getValue());
+        $this->assertEquals(100, $range->getEndValue()->getValue());
     }
 }

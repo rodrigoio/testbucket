@@ -7,5 +7,7 @@ interface ElementInterface
 {
     public function getValue();
 
+    public function isInfinity() : bool;
+
     public function equals(ElementInterface $e) : bool;
 }

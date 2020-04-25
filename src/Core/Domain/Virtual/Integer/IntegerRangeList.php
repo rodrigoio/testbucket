@@ -39,6 +39,14 @@ class IntegerRangeList
         return $this->list->count();
     }
 
+    public function last() : ?Range
+    {
+        if ($this->list->count() > 0) {
+            return $this->list->offsetGet($this->list->count() - 1);
+        }
+        return null;
+    }
+
     public function getIterator()
     {
         return new IntegerRangeIterator( $this );

@@ -81,4 +81,38 @@ class IntegerRangeSet
 
         $this->domains = $newList;
     }
+
+    public function oppositeSet() : IntegerRangeSet
+    {
+        $oppositeSet = new IntegerRangeSet();
+
+        $oppositeList = new IntegerRangeList();
+        foreach ($this->domains->getIterator() as $currentRange) {
+            $lastRange = $oppositeList->last();
+
+            if (!$currentRange->getStartValue()->isInfinity() && !is_null($lastRange)) {
+                $updatedRange = new IntegerRange(
+                    $lastRange->getStartValue(),
+                    $currentRange->getStartValue()->prev()
+                );
+                $oppositeList->set($updatedRange, $oppositeList->count() - 1);
+            }
+
+            if (!$currentRange->getStartValue()->isInfinity() && is_null($lastRange)) {
+                $leftRange = new IntegerRange(new Element(null), $currentRange->getStartValue()->prev());
+                $oppositeList->add($leftRange);
+            }
+
+            if (!$currentRange->getEndValue()->isInfinity()) {
+                $rightRange = new IntegerRange($currentRange->getEndValue()->next(), new Element(null));
+                $oppositeList->add($rightRange);
+            }
+        }
+
+        foreach ($oppositeList->getIterator() as $range) {
+            $oppositeSet->applyUnion($range);
+        }
+
+        return $oppositeSet;
+    }
 }
