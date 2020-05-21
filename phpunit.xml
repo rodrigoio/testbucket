@@ -9,11 +9,17 @@
          processIsolation="false"
          stopOnFailure="false"
          cacheResult="false">
+
+    <php>
+        <env name="TEST_SPEC_V1" value="/code/tests/TestSpecFiles/v1"/>
+    </php>
+
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
+
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
@@ -21,8 +27,7 @@
     </filter>
 
     <logging>
-        <!--<log type="coverage-clover" target="tests/_reports/logs/clover.xml"/>-->
         <log type="coverage-html" target="coverage" lowUpperBound="35" highLowerBound="70" />
-        <!--<log type="testdox-text" target="tests/_reports/testdox/executed.txt"/>-->
     </logging>
+
 </phpunit>

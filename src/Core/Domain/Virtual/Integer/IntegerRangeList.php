@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Core\Domain\Virtual\Integer;
 
+use Iterator;
 use App\Core\Domain\Virtual\Range;
 
 class IntegerRangeList
@@ -47,7 +48,7 @@ class IntegerRangeList
         return null;
     }
 
-    public function getIterator()
+    public function getIterator() : Iterator
     {
         return new IntegerRangeIterator( $this );
     }

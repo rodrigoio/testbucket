@@ -1,23 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Domain\Virtual\Integer;
+namespace App\Core\Specification;
 
 use Iterator;
-use App\Core\Domain\Virtual\Range;
 
-class IntegerRangeIterator implements Iterator
+class FieldIterator implements Iterator
 {
     private $index;
     private $list;
 
-    public function __construct(IntegerRangeList $list)
+    public function __construct(FieldList $list)
     {
         $this->list = $list;
         $this->rewind();
     }
 
-    public function current() : Range
+    public function current() : Field
     {
         return $this->list->get($this->index);
     }

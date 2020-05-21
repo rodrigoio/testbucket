@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Core\Domain\Virtual\Integer;
 
 use App\Core\Domain\ElementInterface;
-use App\Core\Domain\ElementCalculable;
-use App\Core\Domain\Virtual\Range;
 
 class IntegerRangeSet
 {

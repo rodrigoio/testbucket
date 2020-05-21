@@ -1,0 +1,13 @@
+---
+spec:
+  version: 1.0
+  name: add_user
+  fields:
+    - name: age
+      domain:
+        type: IntegerRange
+        argsxx: {start: 18, end: 65}
+    - name: rating
+      domain:
+        type: IntegerRange
+        args: {start:, end: 100}
