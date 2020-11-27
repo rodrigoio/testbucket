@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Domain\Virtual\Integer;
+namespace TestBucket\Core\Domain\Virtual\Integer;
 
 use Iterator;
-use App\Core\Domain\Virtual\Range;
+use TestBucket\Core\Domain\Virtual\Range;
 
 class IntegerRangeList
 {

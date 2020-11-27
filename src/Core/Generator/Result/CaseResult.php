@@ -1,5 +1,5 @@
 <?php
-namespace App\Core\Generator\Result;
+namespace TestBucket\Core\Generator\Result;
 
 class CaseResult
 {

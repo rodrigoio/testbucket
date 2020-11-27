@@ -1,5 +1,5 @@
 <?php
-namespace App\Generator\Output;
+namespace TestBucket\Generator\Output;
 
 class OutputPHPUnitProvider implements Output
 {

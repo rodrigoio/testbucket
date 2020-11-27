@@ -1,9 +1,9 @@
 <?php
-namespace App\Test\Core\Specification;
+namespace TestBucket\Test\Core\Specification;
 
-use App\Core\Specification\Spec;
+use TestBucket\Core\Specification\Spec;
 use PHPUnit\Framework\TestCase;
-use App\Core\Specification\SpecLoader;
+use TestBucket\Core\Specification\SpecLoader;
 
 /**
  * @group spec

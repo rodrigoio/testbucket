@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Domain\Virtual\Integer;
+namespace TestBucket\Core\Domain\Virtual\Integer;
 
-use App\Core\Specification\Domain;
-use App\Core\Domain\DomainFactory;
-use App\Core\Domain\DomainGenerator;
+use TestBucket\Core\Specification\Domain;
+use TestBucket\Core\Domain\DomainFactory;
+use TestBucket\Core\Domain\DomainGenerator;
 
 class Factory implements DomainFactory
 {

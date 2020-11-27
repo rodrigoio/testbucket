@@ -1,8 +1,8 @@
 <?php
-namespace App\Core\DataSource;
+namespace TestBucket\Core\DataSource;
 
-use App\Core\DataStructures\Collection;
-use App\Core\DataSource\ElementCollection;
+use TestBucket\Core\DataStructures\Collection;
+use TestBucket\Core\DataSource\ElementCollection;
 
 class ConcreteDataSource implements DataSource
 {

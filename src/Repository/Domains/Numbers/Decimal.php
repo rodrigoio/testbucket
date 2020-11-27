@@ -1,5 +1,5 @@
 <?php
-namespace App\Repository\Domains;
+namespace TestBucket\Repository\Domains;
 
 class Decimal
 {

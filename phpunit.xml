@@ -12,6 +12,7 @@
 
     <php>
         <env name="TEST_SPEC_V1" value="/code/tests/TestSpecFiles/v1"/>
+        <env name="TESTBUCKET_DIR" value="/code/tmp/bucket"/>
     </php>
 
     <testsuites>
@@ -27,7 +28,6 @@
     </filter>
 
     <logging>
-        <log type="coverage-html" target="coverage" lowUpperBound="35" highLowerBound="70" />
+        <log type="coverage-html" target="tmp/coverage" lowUpperBound="35" highLowerBound="70" />
     </logging>
-
 </phpunit>

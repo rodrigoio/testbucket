@@ -1,8 +1,8 @@
 <?php
-namespace App\Test\Core\Domain\Virtual\Integer;
+namespace TestBucket\Test\Core\Domain\Virtual\Integer;
 
 use PHPUnit\Framework\TestCase;
-use App\Core\Domain\Virtual\Integer\Element;
+use TestBucket\Core\Domain\Virtual\Integer\Element;
 
 /**
  * @group integer_range

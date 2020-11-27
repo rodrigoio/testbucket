@@ -1,5 +1,5 @@
 <?php
-namespace App\Repository;
+namespace TestBucket\Repository;
 
 class Repository
 {

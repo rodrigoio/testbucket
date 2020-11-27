@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Domain\Virtual;
+namespace TestBucket\Core\Domain\Virtual;
 
-use App\Core\Domain\Domain;
-use App\Core\Domain\ElementCalculable;
-use App\Core\Domain\Virtual\Integer\IntegerRangeList;
+use TestBucket\Core\Domain\Domain;
+use TestBucket\Core\Domain\ElementCalculable;
+use TestBucket\Core\Domain\Virtual\Integer\IntegerRangeList;
 
 interface Range extends Domain
 {

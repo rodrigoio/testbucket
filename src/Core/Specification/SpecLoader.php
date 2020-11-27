@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Specification;
+namespace TestBucket\Core\Specification;
 
-use App\Core\Common\ParameterBag;
+use TestBucket\Core\Common\ParameterBag;
 use Symfony\Component\Yaml\Yaml;
 
 class SpecLoader

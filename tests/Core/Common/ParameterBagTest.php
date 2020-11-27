@@ -1,8 +1,8 @@
 <?php
-namespace App\Test\Core\Common;
+namespace TestBucket\Test\Core\Common;
 
 use PHPUnit\Framework\TestCase;
-use App\Core\Common\ParameterBag;
+use TestBucket\Core\Common\ParameterBag;
 
 /**
  * @group spec

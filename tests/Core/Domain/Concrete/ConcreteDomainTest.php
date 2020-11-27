@@ -1,8 +1,8 @@
 <?php
-namespace App\Test\Core\Domain\Concrete;
+namespace TestBucket\Test\Core\Domain\Concrete;
 
-use App\Core\Domain\Concrete\ConcreteDomain;
-use App\Core\DataSource\ConcreteDataSource;
+use TestBucket\Core\Domain\Concrete\ConcreteDomain;
+use TestBucket\Core\DataSource\ConcreteDataSource;
 use PHPUnit\Framework\TestCase;
 
 /**

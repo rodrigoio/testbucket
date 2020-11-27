@@ -1,7 +1,7 @@
 <?php
-namespace App\Core\Generator\Result;
+namespace TestBucket\Core\Generator\Result;
 
-use App\Core\DataStructures\AbstractCollection;
+use TestBucket\Core\DataStructures\AbstractCollection;
 
 class CaseCollection extends AbstractCollection
 {
