@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Domain\Virtual\Integer;
+namespace TestBucket\Core\Domain\Virtual\Integer;
 
-use App\Core\Domain\ElementInterface;
+use TestBucket\Core\Domain\ElementInterface;
 
 class IntegerRangeSet
 {

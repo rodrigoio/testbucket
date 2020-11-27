@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Combiner;
+namespace TestBucket\Core\Combiner;
 
 use ArrayObject;
 use JsonSerializable;
@@ -39,9 +39,25 @@ class Aggregator implements JsonSerializable
         return $aggregator;
     }
 
+    public function split(): AggregatorList
+    {
+        $list = new AggregatorList();
+
+        foreach ($this->tuples as $tuple) {
+            $list->add(Aggregator::createFromTuple($tuple));
+        }
+
+        return $list;
+    }
+
     public function add(Tuple $tuple): void
     {
         $this->tuples->offsetSet($tuple->getUniqueKey(), $tuple);
+    }
+
+    public function count(): int
+    {
+        return $this->tuples->count();
     }
 
     public function toArray(): array
@@ -52,11 +68,6 @@ class Aggregator implements JsonSerializable
     public function makeClone()
     {
         return Aggregator::createFromArray((array) $this->tuples);
-    }
-
-    public function __toString()
-    {
-        return (string) $this->tuples[0];
     }
 
     public function jsonSerialize()

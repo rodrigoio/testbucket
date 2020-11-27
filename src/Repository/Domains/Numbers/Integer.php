@@ -1,7 +1,7 @@
 <?php
-namespace App\Repository\Domains\Numbers;
+namespace TestBucket\Repository\Domains\Numbers;
 
-///use App\Domain\VirtualDomain;
+///use TestBucket\Domain\VirtualDomain;
 
 class Integer //extends VirtualDomain
 {

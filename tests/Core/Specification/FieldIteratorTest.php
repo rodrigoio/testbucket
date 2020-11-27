@@ -1,11 +1,11 @@
 <?php
-namespace App\Test\Core\Specification;
+namespace TestBucket\Test\Core\Specification;
 
 use PHPUnit\Framework\TestCase;
-use App\Core\Common\ParameterBag;
-use App\Core\Specification\Domain;
-use App\Core\Specification\Field;
-use App\Core\Specification\FieldList;
+use TestBucket\Core\Common\ParameterBag;
+use TestBucket\Core\Specification\Domain;
+use TestBucket\Core\Specification\Field;
+use TestBucket\Core\Specification\FieldList;
 
 /**
  * @group spec

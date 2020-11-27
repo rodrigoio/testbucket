@@ -1,7 +1,7 @@
 <?php
-namespace App\Core\Domain\Concrete;
+namespace TestBucket\Core\Domain\Concrete;
 
-use App\Core\DataSource\DataSource;
+use TestBucket\Core\DataSource\DataSource;
 
 /**
  * @deprecated

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Domain;
+namespace TestBucket\Core\Domain;
 
-use App\Core\Specification\Domain;
+use TestBucket\Core\Specification\Domain;
 
 interface DomainFactory
 {

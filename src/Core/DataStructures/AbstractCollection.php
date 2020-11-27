@@ -1,5 +1,5 @@
 <?php
-namespace App\Core\DataStructures;
+namespace TestBucket\Core\DataStructures;
 
 class AbstractCollection implements Collection
 {

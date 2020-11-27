@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\TestCase;
+namespace TestBucket\Core\TestCase;
 
-use App\Core\Common\ParameterBag;
+use TestBucket\Core\Common\ParameterBag;
 
 class CaseData
 {

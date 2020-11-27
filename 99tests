@@ -4,7 +4,7 @@
 require __DIR__.'/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
-use App\Command\SpecCommand;
+use TestBucket\Command\SpecCommand;
 
 $application = new Application();
 

@@ -1,11 +1,11 @@
 <?php
-namespace App\Test\Core\Domain;
+namespace TestBucket\Test\Core\Domain;
 
-use App\Core\Common\ParameterBag;
-use App\Core\Domain\DomainGenerator;
-use App\Core\Specification\Domain;
+use TestBucket\Core\Common\ParameterBag;
+use TestBucket\Core\Domain\DomainGenerator;
+use TestBucket\Core\Specification\Domain;
 use PHPUnit\Framework\TestCase;
-use App\Core\Domain\Factory;
+use TestBucket\Core\Domain\Factory;
 
 /**
  * @group domain

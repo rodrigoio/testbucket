@@ -1,7 +1,7 @@
 <?php
-namespace App\Test\Core\DataSource;
+namespace TestBucket\Test\Core\DataSource;
 
-use App\Core\DataSource\ConcreteDataSource;
+use TestBucket\Core\DataSource\ConcreteDataSource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,7 +14,7 @@ class ConcreteDataSourceTest extends TestCase
         $concrete = new ConcreteDataSource([]);
 
         $collection = $concrete->getAll();
-        $this->assertInstanceOf(\App\Core\DataStructures\Collection::class, $collection);
+        $this->assertInstanceOf(\TestBucket\Core\DataStructures\Collection::class, $collection);
 
         $this->assertTrue($collection->isEmpty());
     }

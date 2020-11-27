@@ -2,24 +2,33 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Combiner;
+namespace TestBucket\Core\Combiner;
 
 use JsonSerializable;
 
 class Tuple implements JsonSerializable
 {
+    private $group;
     private $key;
     private $value;
 
-    public function __construct(string $key, string $value)
+    public function __construct(string $group, string $key, ?string $value)
     {
+        $this->group = $group;
         $this->key = $key;
         $this->value = $value;
     }
 
     public function getUniqueKey()
     {
-        return $this->key . ':' . md5($this->value);
+        $encodedValue = null !== $this->value ? base64_encode($this->value) : $this->value;
+
+        return $this->group . ':' . $this->key . ':(' . $encodedValue . ')';
+    }
+
+    public function getGroup(): string
+    {
+        return $this->group;
     }
 
     public function getKey(): string
@@ -27,7 +36,7 @@ class Tuple implements JsonSerializable
         return $this->key;
     }
 
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }

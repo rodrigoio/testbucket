@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Combiner;
+namespace TestBucket\Core\Combiner;
 
 use ArrayObject;
 use JsonSerializable;
@@ -16,9 +16,34 @@ class AggregatorList implements JsonSerializable
         $this->list = new ArrayObject();
     }
 
+    public static function createFromArray(array $aggregatorArray)
+    {
+        $aggregatorList = new AggregatorList();
+
+        if (empty($aggregatorArray)) {
+            return $aggregatorList;
+        }
+
+        foreach ($aggregatorArray as $oneAggregator) {
+            $aggregatorList->add($oneAggregator);
+        }
+
+        return $aggregatorList;
+    }
+
     public function add(Aggregator $aggregator): void
     {
         $this->list->append($aggregator);
+    }
+
+    public function appendList(AggregatorList $list): void
+    {
+        $iterator = $list->getIterator();
+
+        while($iterator->valid()) {
+            $this->add($iterator->current());
+            $iterator->next();
+        }
     }
 
     public function get(int $index): ?Aggregator

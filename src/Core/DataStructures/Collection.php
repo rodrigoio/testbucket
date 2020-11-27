@@ -1,5 +1,5 @@
 <?php
-namespace App\Core\DataStructures;
+namespace TestBucket\Core\DataStructures;
 
 interface Collection extends \IteratorAggregate
 {

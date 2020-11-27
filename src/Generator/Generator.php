@@ -1,8 +1,8 @@
 <?php
-namespace App\Generator;
+namespace TestBucket\Generator;
 
-use App\Specification\Specification;
-use App\Generator\Output\Output;
+use TestBucket\Specification\Specification;
+use TestBucket\Generator\Output\Output;
 
 interface Generator
 {

@@ -1,25 +1,25 @@
 version: '3'
 services:
-  99tests:
-    container_name: 99tests
-    build: ./dockerfiles/php
+  testbucket:
+    container_name: testbucket
+    build: .
     volumes:
       - ./:/code
     networks:
-      net99tests:
+      nettestbucket:
         ipv4_address: 192.168.0.99
-  99coverage:
-    container_name: 99coverage
-    build: ./dockerfiles/nginx
+  tbcoverage:
+    container_name: tbcoverage
+    image: nginx:latest
     ports:
       - "99:80"
     volumes:
-      - ./coverage:/usr/share/nginx/html
+      - ./tmp/coverage:/usr/share/nginx/html
     networks:
-      net99tests:
+      nettestbucket:
         ipv4_address: 192.168.0.98
 networks:
-  net99tests:
+  nettestbucket:
     ipam:
       driver: default
       config:

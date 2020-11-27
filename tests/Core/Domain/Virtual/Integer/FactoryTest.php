@@ -1,11 +1,11 @@
 <?php
-namespace App\Test\Core\Domain\Virtual\Integer;
+namespace TestBucket\Test\Core\Domain\Virtual\Integer;
 
 use PHPUnit\Framework\TestCase;
-use App\Core\Domain\Virtual\Integer\Factory;
-use App\Core\Specification\Domain;
-use App\Core\Common\ParameterBag;
-use App\Core\Domain\DomainGenerator;
+use TestBucket\Core\Domain\Virtual\Integer\Factory;
+use TestBucket\Core\Specification\Domain;
+use TestBucket\Core\Common\ParameterBag;
+use TestBucket\Core\Domain\DomainGenerator;
 
 /**
  * @group integer_range

@@ -1,7 +1,7 @@
 <?php
-namespace App\Core\DataSource;
+namespace TestBucket\Core\DataSource;
 
-use App\Core\DataStructures\Collection;
+use TestBucket\Core\DataStructures\Collection;
 
 interface DataSource
 {

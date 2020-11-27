@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Core\Domain;
+namespace TestBucket\Core\Domain;
 
-use App\Core\Specification\Domain;
+use TestBucket\Core\Specification\Domain;
 
 class Factory implements DomainFactory
 {
@@ -17,7 +17,7 @@ class Factory implements DomainFactory
     private function getMappedFactory($type) : DomainFactory
     {
         $map = [
-            'IntegerRange' => \App\Core\Domain\Virtual\Integer\Factory::class,
+            'IntegerRange' => \TestBucket\Core\Domain\Virtual\Integer\Factory::class,
         ];
 
         if (!isset($map[$type])) {

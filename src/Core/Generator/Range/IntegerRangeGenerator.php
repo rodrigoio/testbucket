@@ -1,9 +1,9 @@
 <?php
-namespace App\Core\Generator\Range;
+namespace TestBucket\Core\Generator\Range;
 
-use App\Core\Domain\Virtual\Range\Range;
-use App\Core\Generator\Result\CaseResult;
-use App\Core\Generator\Result\CaseCollection;
+use TestBucket\Core\Domain\Virtual\Range\Range;
+use TestBucket\Core\Generator\Result\CaseResult;
+use TestBucket\Core\Generator\Result\CaseCollection;
 
 class IntegerRangeGenerator
 {

@@ -1,9 +1,9 @@
 <?php
-namespace App\Test\Core\TestCase;
+namespace TestBucket\Test\Core\TestCase;
 
 use PHPUnit\Framework\TestCase;
-use App\Core\TestCase\CaseData;
-use App\Core\Common\ParameterBag;
+use TestBucket\Core\TestCase\CaseData;
+use TestBucket\Core\Common\ParameterBag;
 
 /**
  * @group test_case

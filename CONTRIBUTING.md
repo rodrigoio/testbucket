@@ -1,7 +1,7 @@
 Contributing
 ------------
 
-99tests is an open source, community-driven project.
+Test Bucket is an open source, community-driven project.
 
 If you'd like to contribute, please read the following guide:
 
