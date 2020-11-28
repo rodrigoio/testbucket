@@ -15,7 +15,6 @@
 		"symfony/console": "v4.4.7",
 		"symfony/phpunit-bridge": "v4.4.7",
 		"squizlabs/php_codesniffer": "3.5.4",
-		"ext-ds": "*",
       	"ext-json": "*",
       	"ext-sqlite3": "*"
     },
