@@ -7,6 +7,4 @@ namespace TestBucket\Core\Combiner;
 interface TestCaseReceiverInterface
 {
     public function receiveTestCase($testCaseKeys, $testCaseData);
-
-    public function getHydratedResult();
 }

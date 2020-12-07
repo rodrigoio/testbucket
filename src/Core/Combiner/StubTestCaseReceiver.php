@@ -12,9 +12,4 @@ class StubTestCaseReceiver implements TestCaseReceiverInterface
     {
         $this->testCaseKeys[] = $testCaseKeys;
     }
-
-    public function getHydratedResult()
-    {
-        return $this->testCaseKeys;
-    }
 }

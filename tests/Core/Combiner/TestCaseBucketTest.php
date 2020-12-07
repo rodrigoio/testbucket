@@ -27,10 +27,11 @@ class TestCaseBucketTest extends TestCase
 
     public function testSetupTestCaseBucket()
     {
-        $specBuilder = new SpecificationBuilder('order');
+        $specBuilder = new SpecificationBuilder('foobar');
 
         $testCaseData =
             $specBuilder
+                ->setGroup('order')
                 ->property('price', [0.0, 0.70, 55])
                 ->property('status', ['pending', 'paid', 'canceled'])
                 ->build();
@@ -54,11 +55,5 @@ class TestCaseBucketTest extends TestCase
         $bucket->get([
             'order:status' => 'pending'
         ], $receiver);
-
-        $this->assertEquals([
-            'order:price:(MA==)|order:status:(cGVuZGluZw==)',
-            'order:price:(MC43)|order:status:(cGVuZGluZw==)',
-            'order:price:(NTU=)|order:status:(cGVuZGluZw==)',
-        ], $receiver->getHydratedResult());
     }
 }

@@ -10,13 +10,20 @@ class SpecificationBuilder
     private $combinedAggregators;
     private $propertyCount;
 
-    public function __construct($groupName)
+    public function __construct(string $groupName)
     {
         $this->groupName = $groupName;
         $this->propertyCount = 0;
     }
 
-    public function property(string $property, array $values)
+    public function setGroup(string $groupName): SpecificationBuilder
+    {
+        $this->groupName = $groupName;
+        return $this;
+    }
+
+
+    public function property(string $property, array $values): SpecificationBuilder
     {
         $this->propertyCount++;
 
