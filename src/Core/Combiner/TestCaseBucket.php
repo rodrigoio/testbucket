@@ -11,10 +11,22 @@ class TestCaseBucket extends SQLite3
 {
     public const TESTBUCKET_DIR = 'TESTBUCKET_DIR';
 
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var string|null
+     */
     private $bucketPath;
 
-    public function __construct($name, $bucketPath=null)
+    /**
+     * @var TestCaseReceiverInterface
+     */
+    private $receiver;
+
+    public function __construct(string $name, ?string $bucketPath=null)
     {
         $this->name = $name;
         $this->setBucketPath($bucketPath);
@@ -27,7 +39,12 @@ class TestCaseBucket extends SQLite3
         $this->close();
     }
 
-    public function setBucketPath($bucketPath): void
+    public function setReceiver(TestCaseReceiverInterface $receiver)
+    {
+        $this->receiver = $receiver;
+    }
+
+    public function setBucketPath(?string $bucketPath): void
     {
         if (null !== $bucketPath) {
             $this->bucketPath = $bucketPath;
@@ -72,7 +89,7 @@ class TestCaseBucket extends SQLite3
         }
     }
 
-    public function get(array $conditions, ?TestCaseReceiverInterface $receiver = null)
+    public function get(array $conditions, ?string $label=null)
     {
         $sqlConditions = [];
         foreach ($conditions as $predicate=>$value) {
@@ -90,8 +107,12 @@ class TestCaseBucket extends SQLite3
 
             $result[] = $testCaseRow;
 
-            if (null !== $receiver) {
-                $receiver->receiveTestCase($testCaseRow['keys'], json_decode($testCaseRow['json_data'], true));
+            if (null !== $this->receiver) {
+                $this->receiver->receiveTestCase(
+                    $testCaseRow['keys'],
+                    json_decode($testCaseRow['json_data'], true),
+                    $label
+                );
             }
         }
 

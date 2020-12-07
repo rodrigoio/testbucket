@@ -39,21 +39,31 @@ class TestCaseBucketTest extends TestCase
         // Persist test cases
         $bucket = new TestCaseBucket('orders');
         $bucket->persist($testCaseData);
+        $this->assertFileExists($this->databaseFile);
 
-        $this->assertFileExists( $this->databaseFile);
+        // Define a receiver
+        $receiver = new StubTestCaseReceiver();
+        $bucket->setReceiver($receiver);
 
         // query test cases
-        $returnedResult = $bucket->get([
-            'order:status' => 'pending',
-            'order:price' => 0.0
-        ]);
-        $this->assertEquals(1, $returnedResult[0]['id']);
-        $this->assertEquals('order:price:(MA==)|order:status:(cGVuZGluZw==)', $returnedResult[0]['keys']);
+        $bucket->get(
+            [
+                'order:status' => 'pending',
+                'order:price' => 0.7
+            ],
+            'PendingAndCheap'
+        );
+        $this->assertEquals('order:price:(MC43)|order:status:(cGVuZGluZw==)', $receiver->getCase('PendingAndCheap'));
+
 
         // test query with receiver
-        $receiver = new StubTestCaseReceiver();
-        $bucket->get([
-            'order:status' => 'pending'
-        ], $receiver);
+        $bucket->get(
+            [
+                'order:status' => 'pending',
+                'order:price' => 55
+            ],
+            'PendingAndExpensive'
+        );
+        $this->assertEquals('order:price:(NTU=)|order:status:(cGVuZGluZw==)', $receiver->getCase('PendingAndExpensive'));
     }
 }
