@@ -82,8 +82,13 @@ class TestCaseBucket extends SQLite3
             $jsonData = json_encode($oneAggregator);
             $arrayKeys = implode('|', array_keys(json_decode($jsonData, true)));
 
-            $query = sprintf("INSERT INTO test_case (keys, json_data) VALUES ('%s', '%s')", $arrayKeys, $jsonData);
+            $sqliteResult = $this->query(sprintf("SELECT * FROM test_case WHERE keys = '%s'", $arrayKeys));
+            if ($sqliteResult->fetchArray(SQLITE3_ASSOC)) {
+                $iterator->next();
+                continue;
+            }
 
+            $query = sprintf("INSERT INTO test_case (keys, json_data) VALUES ('%s', '%s')", $arrayKeys, $jsonData);
             $this->exec($query);
             $iterator->next();
         }

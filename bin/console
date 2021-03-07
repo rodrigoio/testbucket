@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use TestBucket\Command\Bucket\GenerateCommand;
+use TestBucket\Command\Bucket\CleanUpCommand;
+
+$application = new Application();
+$application->add(new GenerateCommand());
+$application->add(new CleanUpCommand());
+$application->run();

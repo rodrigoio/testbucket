@@ -2,107 +2,119 @@
 namespace TestBucket\Test\Core\Domain\Virtual\Integer;
 
 use PHPUnit\Framework\TestCase;
-use TestBucket\Core\Domain\Virtual\Integer\Element;
-use TestBucket\Core\Domain\Virtual\Integer\IntegerRange;
-use TestBucket\Core\Domain\Virtual\Integer\IntegerRangeSet;
+use TestBucket\Core\Domain\Virtual\Contracts\Range;
+use TestBucket\Core\Domain\Virtual\Contracts\RangeSet;
+use TestBucket\Core\Domain\Virtual\Contracts\ElementCalculable;
+use TestBucket\Core\Domain\Virtual\Integer\IntegerAbstractFactory;
 
 /**
- * @group integer_range
+ * @group virtual_integer_range_set
+ * @group virtual_integer
+ * @group virtual
  */
 class IntegerRangeSetTest extends TestCase
 {
+    /** @var IntegerAbstractFactory */
+    private $factory;
+
+    public function setUp()
+    {
+        $this->factory = new IntegerAbstractFactory();
+    }
+
     public function testAdditionOfNonCrossDomains()
     {
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(0), new Element(5)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(10), new Element(15)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(20), new Element(25)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(30), new Element(40)));
+        $integerRangeSet = $this->createRangeSet();
+
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(0), $this->createElement(5)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(10), $this->createElement(15)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(20), $this->createElement(25)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(30), $this->createElement(40)));
         //
-        $this->assertFalse( $integerRangeSet->has(new Element(-1)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(0)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(5)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(6)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(-1)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(0)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(5)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(6)) );
 
-        $this->assertFalse( $integerRangeSet->has(new Element(9)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(10)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(15)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(16)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(9)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(10)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(15)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(16)) );
 
-        $this->assertFalse( $integerRangeSet->has(new Element(19)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(20)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(25)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(26)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(19)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(20)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(25)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(26)) );
 
-        $this->assertFalse( $integerRangeSet->has(new Element(29)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(30)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(40)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(41)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(29)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(30)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(40)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(41)) );
     }
 
     public function testAdditionOfCrossDomains()
     {
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(15), new Element(20)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(19), new Element(25)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(11), new Element(18)));
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(15), $this->createElement(20)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(19), $this->createElement(25)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(11), $this->createElement(18)));
         //
-        $this->assertFalse( $integerRangeSet->has(new Element(10)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(11)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(25)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(26)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(10)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(11)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(25)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(26)) );
     }
 
     public function testAdditionByPrecision()
     {
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(0), new Element(5)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(6), new Element(11)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(12), new Element(24)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(25), new Element(30)));
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(0), $this->createElement(5)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(6), $this->createElement(11)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(12), $this->createElement(24)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(25), $this->createElement(30)));
         //
-        $this->assertFalse( $integerRangeSet->has(new Element(-1)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(0)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(30)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(31)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(-1)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(0)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(30)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(31)) );
     }
 
     public function testSubtractFromOneRange()
     {
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(1), new Element(3)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(5), new Element(7)));
-        $integerRangeSet->applyDifference(new IntegerRange(new Element(3), new Element(5)));
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(1), $this->createElement(3)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(5), $this->createElement(7)));
+        $integerRangeSet->applyDifference($this->createRange($this->createElement(3), $this->createElement(5)));
         //
-        $this->assertFalse( $integerRangeSet->has(new Element(0)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(1)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(2)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(3)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(5)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(6)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(7)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(8)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(0)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(1)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(2)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(3)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(5)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(6)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(7)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(8)) );
 
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(1), new Element(6)));
-        $integerRangeSet->applyDifference(new IntegerRange(new Element(3), new Element(5)));
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(1), $this->createElement(6)));
+        $integerRangeSet->applyDifference($this->createRange($this->createElement(3), $this->createElement(5)));
         //
-        $this->assertFalse( $integerRangeSet->has(new Element(0)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(1)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(2)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(3)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(5)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(6)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(7)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(0)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(1)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(2)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(3)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(5)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(6)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(7)) );
 
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(7), new Element(9)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(11), new Element(12)));
-        $integerRangeSet->applyDifference(new IntegerRange(new Element(6), new Element(11)));
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(7), $this->createElement(9)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(11), $this->createElement(12)));
+        $integerRangeSet->applyDifference($this->createRange($this->createElement(6), $this->createElement(11)));
         //
-        $this->assertFalse( $integerRangeSet->has(new Element(11)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(12)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(13)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(11)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(12)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(13)) );
     }
 
 
@@ -110,99 +122,114 @@ class IntegerRangeSetTest extends TestCase
     {
         // 0 <1 2 3> 4 5 6 7 8 9 10 11 12 13 14
         // 0> 1 2 3 <4 5 6 7 8 9 10 11 12 13 14
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(1), new Element(3)));
-        $this->assertFalse( $integerRangeSet->has(new Element(0)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(1)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(3)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(4)) );
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(1), $this->createElement(3)));
+        $this->assertFalse( $integerRangeSet->has($this->createElement(0)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(1)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(3)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(4)) );
         //
         $oppositeSet = $integerRangeSet->oppositeSet();
-        $this->assertTrue( $oppositeSet->has(new Element(-100)) );
-        $this->assertTrue( $oppositeSet->has(new Element(-10)) );
-        $this->assertTrue( $oppositeSet->has(new Element(0)) );
-        $this->assertFalse( $oppositeSet->has(new Element(1)) );
-        $this->assertFalse( $oppositeSet->has(new Element(3)) );
-        $this->assertTrue( $oppositeSet->has(new Element(4)) );
-        $this->assertTrue( $oppositeSet->has(new Element(40)) );
-        $this->assertTrue( $oppositeSet->has(new Element(4000)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(-100)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(-10)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(0)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(1)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(3)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(4)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(40)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(4000)) );
 
         // 0 1 2 3 4 5> 6 7 8  9 10 11 12 13 14
         // 0 1 2 3 4 5  6 7 8 <9 10 11 12 13 14
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(null), new Element(5)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(9), new Element(null)));
-        $this->assertTrue( $integerRangeSet->has(new Element(-1000)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(-10)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(5)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(6)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(8)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(9)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(40)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(4000)) );
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(null), $this->createElement(5)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(9), $this->createElement(null)));
+        $this->assertTrue( $integerRangeSet->has($this->createElement(-1000)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(-10)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(5)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(6)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(8)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(9)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(40)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(4000)) );
         //
         $oppositeSet = $integerRangeSet->oppositeSet();
-        $this->assertFalse( $oppositeSet->has(new Element(5)) );
-        $this->assertTrue( $oppositeSet->has(new Element(6)) );
-        $this->assertTrue( $oppositeSet->has(new Element(8)) );
-        $this->assertFalse( $oppositeSet->has(new Element(9)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(5)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(6)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(8)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(9)) );
 
         // 0 <1 2 3> 4 5 6 7 8 <9 10 11> 12 13 14
         // 0> 1 2 3 <4 5 6 7 8> 9 10 11 <12 13 14
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(1), new Element(3)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(9), new Element(11)));
-        $this->assertFalse( $integerRangeSet->has(new Element(0)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(1)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(3)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(4)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(8)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(9)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(11)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(12)) );
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(1), $this->createElement(3)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(9), $this->createElement(11)));
+        $this->assertFalse( $integerRangeSet->has($this->createElement(0)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(1)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(3)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(4)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(8)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(9)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(11)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(12)) );
         //
         $oppositeSet = $integerRangeSet->oppositeSet();
-        $this->assertTrue( $oppositeSet->has(new Element(-1000)) );
-        $this->assertTrue( $oppositeSet->has(new Element(-10)) );
-        $this->assertTrue( $oppositeSet->has(new Element(0)) );
-        $this->assertFalse( $oppositeSet->has(new Element(1)) );
-        $this->assertFalse( $oppositeSet->has(new Element(3)) );
-        $this->assertTrue( $oppositeSet->has(new Element(4)) );
-        $this->assertTrue( $oppositeSet->has(new Element(8)) );
-        $this->assertFalse( $oppositeSet->has(new Element(9)) );
-        $this->assertFalse( $oppositeSet->has(new Element(11)) );
-        $this->assertTrue( $oppositeSet->has(new Element(12)) );
-        $this->assertTrue( $oppositeSet->has(new Element(100)) );
-        $this->assertTrue( $oppositeSet->has(new Element(1000)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(-1000)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(-10)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(0)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(1)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(3)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(4)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(8)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(9)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(11)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(12)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(100)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(1000)) );
 
         // 0 1 2 3 4 5> 6 7 8 9 10 11 12 13  14 15
         // 0 1 2 3 4 5 6 7 8 <9 10> 11 12 13 14 15
         // 0 1 2 3 4 5 6 7 8  9 10 11 12 13 <14 15
-        $integerRangeSet = new IntegerRangeSet();
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(null), new Element(5)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(9), new Element(10)));
-        $integerRangeSet->applyUnion(new IntegerRange(new Element(14), new Element(null)));
-        $this->assertTrue( $integerRangeSet->has(new Element(3)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(4)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(5)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(6)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(8)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(9)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(10)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(11)) );
-        $this->assertFalse( $integerRangeSet->has(new Element(13)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(14)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(15)) );
-        $this->assertTrue( $integerRangeSet->has(new Element(16)) );
+        $integerRangeSet = $this->createRangeSet();
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(null), $this->createElement(5)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(9), $this->createElement(10)));
+        $integerRangeSet->applyUnion($this->createRange($this->createElement(14), $this->createElement(null)));
+        $this->assertTrue( $integerRangeSet->has($this->createElement(3)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(4)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(5)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(6)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(8)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(9)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(10)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(11)) );
+        $this->assertFalse( $integerRangeSet->has($this->createElement(13)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(14)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(15)) );
+        $this->assertTrue( $integerRangeSet->has($this->createElement(16)) );
         //
         $oppositeSet = $integerRangeSet->oppositeSet();
-        $this->assertFalse( $oppositeSet->has(new Element(5)) );
-        $this->assertTrue( $oppositeSet->has(new Element(6)) );
-        $this->assertTrue( $oppositeSet->has(new Element(8)) );
-        $this->assertFalse( $oppositeSet->has(new Element(9)) );
-        $this->assertFalse( $oppositeSet->has(new Element(10)) );
-        $this->assertTrue( $oppositeSet->has(new Element(11)) );
-        $this->assertTrue( $oppositeSet->has(new Element(13)) );
-        $this->assertFalse( $oppositeSet->has(new Element(14)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(5)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(6)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(8)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(9)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(10)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(11)) );
+        $this->assertTrue( $oppositeSet->has($this->createElement(13)) );
+        $this->assertFalse( $oppositeSet->has($this->createElement(14)) );
+    }
+
+    private function createRangeSet(): RangeSet
+    {
+        return $this->factory->createRangeSet();
+    }
+
+    private function createRange(ElementCalculable $start, ElementCalculable $end): Range
+    {
+        return $this->factory->createRange($start, $end);
+    }
+
+    private function createElement($value): ElementCalculable
+    {
+        return $this->factory->createElement($value);
     }
 }

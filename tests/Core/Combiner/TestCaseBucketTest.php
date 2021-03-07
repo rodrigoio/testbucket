@@ -66,4 +66,22 @@ class TestCaseBucketTest extends TestCase
         );
         $this->assertEquals('order:price:(NTU=)|order:status:(cGVuZGluZw==)', $receiver->getCase('PendingAndExpensive'));
     }
+
+    public function testPersistSameCase()
+    {
+        $specBuilder = new SpecificationBuilder('foobar');
+
+        $testCaseData =
+            $specBuilder
+                ->setGroup('order')
+                ->property('price', [0.0, 0.70, 55])
+                ->property('status', ['pending', 'paid', 'canceled'])
+                ->build();
+
+        // Persist test cases
+        $bucket = new TestCaseBucket('orders');
+        $bucket->persist($testCaseData);
+        $bucket->persist($testCaseData);
+        $this->assertFileExists($this->databaseFile);
+    }
 }

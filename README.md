@@ -14,25 +14,76 @@ tests not having a direct relationship with the application code, but with the s
 
 If at any time you have realized how complex it is to deal with test cases, consider contributing to this project.
 
-Expected Phases
----------------
-This project is in course, and the expected phases are:
+Install:
+--------
+```shell script
+docker-compose up -d
+```
 
-- [Layer of static and virtual domains][0]
-- [Input domain specification layer with YML][1]
-- [Data generation strategies based on static and virtual domains][2]
-- [Implement results layer and output formats][3]
-- [Implement console tool][4]
-- [Specification of state-based tests][5]
+Configuration:
+--------------
+| Variable          | Description |
+|-------------------|-------------|
+| `TESTBUCKET_DIR`  | Define where the sqlite database (or bucket) will be created |
+
+
+Usage on PHPUnit tests:
+----------------------
+```php
+<?php
+
+use PHPUnit\Framework\TestCase;
+
+use App\Entity\Product;
+
+use TestBucket\Core\Combiner\SpecificationBuilder;
+use TestBucket\Core\Combiner\TestCaseBucket;
+use TestBucket\Core\Combiner\TestCaseReceiverInterface;
+
+class FooTestCase extends TestCase implements TestCaseReceiverInterface
+{
+    private $bucket;
+    private $products;
+
+    public function setUp()
+    {
+        parent::setUp();
+    
+        $spec = new SpecificationBuilder('product');
+        $result = $spec
+            ->setGroup('product')
+            ->property("name"   , ['product'])
+            ->property("qty"    , [23])
+            ->property("price"  , [0.0, 500.34])
+            ->property("status" , [1, 2, 3])
+            ->property("type"   , [1, 2])
+            ->build();
+    
+        $this->bucket = new TestCaseBucket('products');
+        $this->bucket->setReceiver($this);
+        $this->bucket->persist($result);
+    
+        $this->products = [];
+    }
+    
+    // (...)
+    // Use populated ( $this->products ) in tests
+    // (...)
+    
+    public function receiveTestCase($testCaseKeys, $testCaseData, $label)
+    {
+        $data = [];
+        foreach ($testCaseData as $item) {
+            $data[$item['key']] = $item['value'];
+        }
+
+        $this->products[$label] = new Product($data['name'], $data['qty'], $data['price'], $data['status']);
+    }
+}
+```
 
 Contact:
 -------
-If you want to contribute to this project, see the [guidelines][6]
+If you want to contribute to this project, see the [guidelines][0]
 
-[0]: https://github.com/rodrigoio/testbucket/issues/16
-[1]: https://github.com/rodrigoio/testbucket/issues/17
-[2]: https://github.com/rodrigoio/testbucket/issues/18
-[3]: https://github.com/rodrigoio/testbucket/issues/19
-[4]: https://github.com/rodrigoio/testbucket/issues/20
-[5]: https://github.com/rodrigoio/testbucket/issues/21
-[6]: https://github.com/rodrigoio/testbucket/blob/master/CONTRIBUTING.md
+[0]: https://github.com/rodrigoio/testbucket/blob/master/CONTRIBUTING.md
