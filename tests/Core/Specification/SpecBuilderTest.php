@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group spec
+ * @deprecated will be removed
  */
 class SpecBuilderTest extends TestCase
 {

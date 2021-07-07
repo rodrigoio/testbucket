@@ -3,11 +3,13 @@ services:
   testbucket:
     container_name: testbucket
     build: .
+    environment:
+      - "TESTBUCKET_DIR=/code/tmp/bucket/test.db.sqlite"
     volumes:
       - ./:/code
     networks:
       nettestbucket:
-        ipv4_address: 192.168.0.99
+        ipv4_address: 172.168.0.99
   tbcoverage:
     container_name: tbcoverage
     image: nginx:latest
@@ -17,10 +19,10 @@ services:
       - ./tmp/coverage:/usr/share/nginx/html
     networks:
       nettestbucket:
-        ipv4_address: 192.168.0.98
+        ipv4_address: 172.168.0.98
 networks:
   nettestbucket:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.0.0/24
+        - subnet: 172.168.0.0/24

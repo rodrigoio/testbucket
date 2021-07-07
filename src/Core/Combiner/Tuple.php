@@ -9,21 +9,26 @@ use JsonSerializable;
 class Tuple implements JsonSerializable
 {
     private $group;
-    private $key;
+    private $property;
     private $value;
+    private $valid;
 
-    public function __construct(string $group, string $key, ?string $value)
+    /**
+     * @deprecated rename $key to property
+     */
+    public function __construct(string $group, string $property, Value $value)
     {
         $this->group = $group;
-        $this->key = $key;
-        $this->value = $value;
+        $this->property = $property;
+        $this->value = (string) $value->getValue();
+        $this->valid = $value->isValid();
     }
 
     public function getUniqueKey()
     {
         $encodedValue = null !== $this->value ? base64_encode($this->value) : $this->value;
 
-        return $this->group . ':' . $this->key . ':(' . $encodedValue . ')';
+        return $this->group . ':' . $this->property . ':(' . $encodedValue . '):' . (int) $this->valid;
     }
 
     public function getGroup(): string
@@ -31,9 +36,9 @@ class Tuple implements JsonSerializable
         return $this->group;
     }
 
-    public function getKey(): string
+    public function getProperty(): string
     {
-        return $this->key;
+        return $this->property;
     }
 
     public function getValue(): ?string
@@ -41,11 +46,18 @@ class Tuple implements JsonSerializable
         return $this->value;
     }
 
+    public function isValid(): bool
+    {
+        return $this->valid;
+    }
+
     public function jsonSerialize()
     {
         return [
-            'key' => $this->key,
+            'group' => $this->group,
+            'property' => $this->property,
             'value' => $this->value,
+            'is_valid' => $this->valid,
         ];
     }
 }

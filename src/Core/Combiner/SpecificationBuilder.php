@@ -10,9 +10,8 @@ class SpecificationBuilder
     private $combinedAggregators;
     private $propertyCount;
 
-    public function __construct(string $groupName)
+    public function __construct()
     {
-        $this->groupName = $groupName;
         $this->propertyCount = 0;
     }
 
@@ -22,16 +21,19 @@ class SpecificationBuilder
         return $this;
     }
 
+    public function getGroupName(): string
+    {
+        return $this->groupName;
+    }
 
-    public function property(string $property, array $values): SpecificationBuilder
+
+    public function property(string $property, DataExpansionInterface $data): SpecificationBuilder
     {
         $this->propertyCount++;
 
+        $values = $data->expand();
         $tuples = [];
         foreach ($values as $oneValue) {
-
-            $oneValue = null !== $oneValue ? (string) $oneValue : null;
-
             $tuples[] = new Tuple($this->groupName, $property, $oneValue);
         }
 

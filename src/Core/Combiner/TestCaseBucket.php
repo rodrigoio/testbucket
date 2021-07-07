@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace TestBucket\Core\Combiner;
 
+use Doctrine\DBAL\ParameterType;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
 use Exception;
-use SQLite3;
 
-class TestCaseBucket extends SQLite3
+use TestBucket\Entity\TestGroup;
+use TestBucket\Entity\TestProperty;
+
+class TestCaseBucket
 {
     public const TESTBUCKET_DIR = 'TESTBUCKET_DIR';
 
@@ -26,17 +31,16 @@ class TestCaseBucket extends SQLite3
      */
     private $receiver;
 
-    public function __construct(string $name, ?string $bucketPath=null)
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    public function __construct(string $name, EntityManager $entityManager)
     {
         $this->name = $name;
-        $this->setBucketPath($bucketPath);
-
-        $this->open($this->bucketPath . DIRECTORY_SEPARATOR . $this->name . ".db");
-    }
-
-    public function __destruct()
-    {
-        $this->close();
+        $this->entityManager = $entityManager;
+        $this->bucketPath = getenv(self::TESTBUCKET_DIR);
     }
 
     public function setReceiver(TestCaseReceiverInterface $receiver)
@@ -58,20 +62,13 @@ class TestCaseBucket extends SQLite3
         }
     }
 
-    public function persist(AggregatorList $aggregatorList): void
+    public function persist(SpecificationBuilder $specificationBuilder): void
     {
+        $aggregatorList = $specificationBuilder->build();
+
         if ($aggregatorList->count() == 0) {
             return;
         }
-
-        $this->exec("
-            CREATE TABLE IF NOT EXISTS test_case
-            (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                keys TEXT NOT NULL UNIQUE,
-                json_data TEXT NOT NULL
-            );
-        ");
 
         $iterator = $aggregatorList->getIterator();
 
@@ -79,48 +76,16 @@ class TestCaseBucket extends SQLite3
 
             $oneAggregator = $iterator->current();
 
-            $jsonData = json_encode($oneAggregator);
-            $arrayKeys = implode('|', array_keys(json_decode($jsonData, true)));
+            $tuples = array_values($oneAggregator->toArray());
 
-            $sqliteResult = $this->query(sprintf("SELECT * FROM test_case WHERE keys = '%s'", $arrayKeys));
-            if ($sqliteResult->fetchArray(SQLITE3_ASSOC)) {
-                $iterator->next();
-                continue;
+            foreach ($tuples as $tuple) {
+
+                //TODO persist each new test case
+                print_r( $tuple );
             }
-
-            $query = sprintf("INSERT INTO test_case (keys, json_data) VALUES ('%s', '%s')", $arrayKeys, $jsonData);
-            $this->exec($query);
             $iterator->next();
         }
     }
 
-    public function get(array $conditions, ?string $label=null)
-    {
-        $sqlConditions = [];
-        foreach ($conditions as $predicate=>$value) {
-            $sqlConditions[] = sprintf("keys LIKE '%%%s:(%s)%%'", $predicate, base64_encode("$value"));
-        }
-
-        if (!empty($sqlConditions)) {
-            $whereConditions = " WHERE " .  implode(" AND ", $sqlConditions);
-        }
-        $sqliteResult = $this->query("SELECT * FROM test_case $whereConditions;");
-
-
-        $result = [];
-        while($testCaseRow = $sqliteResult->fetchArray(SQLITE3_ASSOC) ) {
-
-            $result[] = $testCaseRow;
-
-            if (null !== $this->receiver) {
-                $this->receiver->receiveTestCase(
-                    $testCaseRow['keys'],
-                    json_decode($testCaseRow['json_data'], true),
-                    $label
-                );
-            }
-        }
-
-        return $result;
-    }
+    //TODO - Implement search interface
 }

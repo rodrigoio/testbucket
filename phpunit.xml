@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="false"
          convertNoticesToExceptions="false"
@@ -12,7 +12,8 @@
 
     <php>
         <env name="TEST_SPEC_V1" value="/code/tests/TestSpecFiles/v1"/>
-        <env name="TESTBUCKET_DIR" value="/code/tmp/bucket"/>
+        <env name="TESTBUCKET_DIR" value="/code/tmp/bucket/test.db.sqlite"/>
+        <env name="ENTITY_PATH_DIR" value="/code/config/xml"/>
     </php>
 
     <testsuites>

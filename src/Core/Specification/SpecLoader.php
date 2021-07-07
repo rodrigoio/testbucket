@@ -6,6 +6,8 @@ namespace TestBucket\Core\Specification;
 use TestBucket\Core\Common\ParameterBag;
 use Symfony\Component\Yaml\Yaml;
 
+//TODO - load config file to database
+//TODO - make builder interface to persist expanded values of properties
 class SpecLoader
 {
     private $filepath;

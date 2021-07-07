@@ -4,6 +4,7 @@ namespace TestBucket\Test\Core\Common;
 
 use TestBucket\Core\Combiner\AggregatorList;
 use TestBucket\Core\Combiner\SpecificationBuilder;
+use TestBucket\Core\Combiner\StaticDataExpansion;
 use PHPUnit\Framework\TestCase;
 use TestBucket\Core\Combiner\Tuple;
 
@@ -14,20 +15,21 @@ class SpecificationBuilderTest extends TestCase
 {
     public function testBuild()
     {
-        $builder = new SpecificationBuilder('person');
+        $builder = new SpecificationBuilder();
 
         $result =
             $builder
-                ->property('age', [20, 45, 60])
+                ->setGroup('person')
+                ->property('age', new StaticDataExpansion([20, 45, 60]))
                 ->build();
 
         $this->assertInstanceOf(AggregatorList::class, $result);
         $combinedData = json_decode(json_encode($result), true);
 
         // aggregator 1
-        $this->assertArrayHasKey('person:age:(MjA=)', $combinedData[0]);
-        $this->assertArrayHasKey('person:age:(NDU=)', $combinedData[0]);
-        $this->assertArrayHasKey('person:age:(NjA=)', $combinedData[0]);
+        $this->assertArrayHasKey('person:age:(MjA=):1', $combinedData[0]);
+        $this->assertArrayHasKey('person:age:(NDU=):1', $combinedData[0]);
+        $this->assertArrayHasKey('person:age:(NjA=):1', $combinedData[0]);
 
 
         // Tuples
@@ -43,13 +45,14 @@ class SpecificationBuilderTest extends TestCase
         $tpEmail01 = new Tuple('user', 'email', 'email@email.com');
         $tpEmail02 = new Tuple('user', 'email', null);
 
-        $builder = new SpecificationBuilder('user');
+        $builder = new SpecificationBuilder();
 
         $result =
             $builder
-                ->property('age', [20, 45, 60])
-                ->property('status', [0, 1, 2, 3])
-                ->property('email', ['email@email.com', null])
+                ->setGroup('user')
+                ->property('age', new StaticDataExpansion([20, 45, 60]))
+                ->property('status', new StaticDataExpansion([0, 1, 2, 3]))
+                ->property('email', new StaticDataExpansion(['email@email.com', null]))
                 ->build();
 
         $combinedData = json_decode(json_encode($result), true);
