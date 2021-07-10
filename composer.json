@@ -7,7 +7,7 @@
 		"tests",
 		"generator",
 		"test cases"
-	],	
+	],
     "require": {
 		"php" : "^7.2",
         "symfony/dotenv": "v4.4.7",
@@ -33,7 +33,7 @@
         }
     },
 	"bin": [
-		"bin/console"
+		"testbucket"
 	],
 	"scripts": {
 		"test_setup": "vendor/bin/doctrine --force orm:schema-tool:drop && vendor/bin/doctrine orm:schema-tool:create --quiet",
