@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use TestBucket\Core\Combiner\Combiner;
 use TestBucket\Core\Combiner\Aggregator;
 use TestBucket\Core\Combiner\Tuple;
+use TestBucket\Core\Combiner\Value;
 
 /**
  * @group combiner
@@ -21,9 +22,9 @@ class CombinerTest extends TestCase
         $combiner = new Combiner();
 
         // Samples
-        $tpName = new Tuple('user','name', 'John');
-        $tpAge01 = new Tuple('user','age', 15);
-        $tpAge02 = new Tuple('user','age', 60);
+        $tpName = new Tuple('user','name', new Value('John'));
+        $tpAge01 = new Tuple('user','age', new Value(15));
+        $tpAge02 = new Tuple('user','age', new Value(60));
 
         $possibleNames = AggregatorList::createFromArray([
             Aggregator::createFromTuple($tpName)
@@ -49,8 +50,8 @@ class CombinerTest extends TestCase
         // ----------------------------------------------------------------------
 
         // Samples
-        $tpStatus01 = new Tuple('user','status', 1);
-        $tpStatus02 = new Tuple('user','status', 0);
+        $tpStatus01 = new Tuple('user','status', new Value(1));
+        $tpStatus02 = new Tuple('user','status', new Value(0));
 
         // Test increment aggregates
         $possibleStatuses = Aggregator::createFromArray([
@@ -91,13 +92,13 @@ class CombinerTest extends TestCase
     {
         $combiner = new Combiner();
 
-        $tpStatus01 = new Tuple('user', 'status', 'on');
-        $tpStatus02 = new Tuple('user', 'status', 'off');
-        $tpStatus03 = new Tuple('user', 'status', 'inter');
+        $tpStatus01 = new Tuple('user', 'status', new Value('on'));
+        $tpStatus02 = new Tuple('user', 'status', new Value('off'));
+        $tpStatus03 = new Tuple('user', 'status', new Value('inter'));
 
-        $tpPassword01 = new Tuple('user', 'region', '10');
-        $tpPassword02 = new Tuple('user', 'region', '20');
-        $tpPassword03 = new Tuple('user', 'region', '30');
+        $tpPassword01 = new Tuple('user', 'region', new Value('10'));
+        $tpPassword02 = new Tuple('user', 'region', new Value('20'));
+        $tpPassword03 = new Tuple('user', 'region', new Value('30'));
 
         $aggregatorStatus = Aggregator::createFromArray([
             $tpStatus01,

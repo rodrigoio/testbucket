@@ -9,25 +9,25 @@
             <generator strategy="AUTO"/>
         </id>
 
-        <one-to-one field="testGroup" target-entity="TestBucket\Entity\TestGroup">
+        <one-to-one field="grouping" target-entity="TestBucket\Entity\Grouping">
             <cascade>
                 <cascade-remove/>
             </cascade>
-            <join-column name="test_group_id" referenced-column-name="id"/>
+            <join-column name="grouping_id" referenced-column-name="id"/>
         </one-to-one>
 
-        <one-to-one field="testProperty" target-entity="TestBucket\Entity\TestProperty">
+        <one-to-one field="property" target-entity="TestBucket\Entity\Property">
             <cascade>
                 <cascade-remove/>
             </cascade>
-            <join-column name="test_property_id" referenced-column-name="id"/>
+            <join-column name="property_id" referenced-column-name="id"/>
         </one-to-one>
 
-        <one-to-one field="testPropertyValue" target-entity="TestBucket\Entity\TestPropertyValue">
+        <one-to-one field="propertyValue" target-entity="TestBucket\Entity\PropertyValue">
             <cascade>
                 <cascade-remove/>
             </cascade>
-            <join-column name="test_property_value_id" referenced-column-name="id"/>
+            <join-column name="property_value_id" referenced-column-name="id"/>
         </one-to-one>
     </entity>
 </doctrine-mapping>

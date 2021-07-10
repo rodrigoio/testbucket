@@ -1,0 +1,8 @@
+version: 1.0
+group: User
+property:
+  - name: age
+    type: IntegerRange
+    value: [
+      {start: 18, end: 75}
+    ]

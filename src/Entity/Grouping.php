@@ -3,14 +3,17 @@
 namespace TestBucket\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use TestBucket\Core\Specification\Collection;
+use TestBucket\Core\Specification\Group;
+use TestBucket\Core\Specification\Property;
 
-class TestGroup
+class Grouping implements Group
 {
     private $id;
     private $name;
 
     /**
-     * @var ArrayCollection
+     * @var Collection
      */
     private $properties;
 
@@ -34,9 +37,17 @@ class TestGroup
         $this->name = $name;
     }
 
-    public function addProperty(TestProperty $testProperty): void
+    public function addProperty(Property $property): void
     {
-        $testProperty->setGroup($this);
-        $this->properties->add($testProperty);
+        $property->setGroup($this);
+        $this->properties->add($property);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProperties()
+    {
+        return $this->properties;
     }
 }

@@ -8,9 +8,9 @@ use Doctrine\ORM\Tools\Setup;
 use PHPUnit\Framework\TestCase;
 
 use TestBucket\Entity\TestCase as EntityTestCase;
-use TestBucket\Entity\TestGroup;
-use TestBucket\Entity\TestProperty;
-use TestBucket\Entity\TestPropertyValue;
+use TestBucket\Entity\Grouping;
+use TestBucket\Entity\Property;
+use TestBucket\Entity\PropertyValue;
 
 class AbstractTestCase extends TestCase
 {
@@ -22,6 +22,19 @@ class AbstractTestCase extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->resetEntityManager();
+
+        $schemaTool = new SchemaTool($this->entityManager);
+        $schemaTool->createSchema([
+            $this->entityManager->getClassMetadata(Grouping::class),
+            $this->entityManager->getClassMetadata(Property::class),
+            $this->entityManager->getClassMetadata(PropertyValue::class),
+            $this->entityManager->getClassMetadata(EntityTestCase::class),
+        ]);
+    }
+
+    public function resetEntityManager()
+    {
         $isDevMode = true;
         $config = Setup::createXMLMetadataConfiguration(
             [getenv("ENTITY_PATH_DIR")],
@@ -35,18 +48,10 @@ class AbstractTestCase extends TestCase
             'driver' => 'pdo_sqlite',
             'path' => getenv('TESTBUCKET_DIR'),
         ], $config);
-
-        $schemaTool = new SchemaTool($this->entityManager);
-        $schemaTool->createSchema([
-            $this->entityManager->getClassMetadata(TestGroup::class),
-            $this->entityManager->getClassMetadata(TestProperty::class),
-            $this->entityManager->getClassMetadata(TestPropertyValue::class),
-            $this->entityManager->getClassMetadata(EntityTestCase::class),
-        ]);
     }
 
-    public function dump($object)
+    public function dump($object, $maxDepth=2)
     {
-        \Doctrine\Common\Util\Debug::dump($object);
+        \Doctrine\Common\Util\Debug::dump($object, $maxDepth);
     }
 }

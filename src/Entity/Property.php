@@ -3,17 +3,20 @@
 namespace TestBucket\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use TestBucket\Core\Specification\Group;
+use TestBucket\Core\Specification\Property as PropertyInterface;
+use TestBucket\Core\Specification\PropertyValue;
 
-class TestProperty
+class Property implements PropertyInterface
 {
     private $id;
     private $name;
     private $type;
 
     /**
-     * @var TestGroup
+     * @var Group
      */
-    private $group;
+    private $grouping;
 
     /**
      * @var ArrayCollection
@@ -28,11 +31,6 @@ class TestProperty
     public function getId()
     {
         return $this->id;
-    }
-
-    public function setId($id): void
-    {
-        $this->id = $id;
     }
 
     public function getName()
@@ -56,24 +54,29 @@ class TestProperty
     }
 
     /**
-     * @return TestGroup
+     * @return Group
      */
-    public function getGroup(): TestGroup
+    public function getGroup(): Group
     {
-        return $this->group;
+        return $this->grouping;
     }
 
     /**
-     * @param TestGroup $group
+     * @param Group $group
      */
-    public function setGroup(TestGroup $group): void
+    public function setGroup(Group $group): void
     {
-        $this->group = $group;
+        $this->grouping = $group;
     }
 
-    public function addValue(TestPropertyValue $testPropertyValue): void
+    public function addValue(PropertyValue $propertyValue): void
     {
-        $testPropertyValue->setProperty($this);
-        $this->values->add($testPropertyValue);
+        $propertyValue->setProperty($this);
+        $this->values->add($propertyValue);
+    }
+
+    public function getValues()
+    {
+        return $this->values;
     }
 }

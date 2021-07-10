@@ -9,8 +9,8 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Exception;
 
-use TestBucket\Entity\TestGroup;
-use TestBucket\Entity\TestProperty;
+use TestBucket\Entity\Grouping;
+use TestBucket\Entity\Property;
 
 class TestCaseBucket
 {

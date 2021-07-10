@@ -7,6 +7,7 @@ use TestBucket\Core\Combiner\SpecificationBuilder;
 use TestBucket\Core\Combiner\StaticDataExpansion;
 use PHPUnit\Framework\TestCase;
 use TestBucket\Core\Combiner\Tuple;
+use TestBucket\Core\Combiner\Value;
 
 /**
  * @group combiner_spec_builder
@@ -33,17 +34,17 @@ class SpecificationBuilderTest extends TestCase
 
 
         // Tuples
-        $tpAge01 = new Tuple('user', 'age', 20);
-        $tpAge02 = new Tuple('user', 'age', 45);
-        $tpAge03 = new Tuple('user', 'age', 60);
+        $tpAge01 = new Tuple('user', 'age', new Value(20));
+        $tpAge02 = new Tuple('user', 'age', new Value(45));
+        $tpAge03 = new Tuple('user', 'age', new Value(60));
 
-        $tpStatus01 = new Tuple('user', 'status', 0);
-        $tpStatus02 = new Tuple('user', 'status', 1);
-        $tpStatus03 = new Tuple('user', 'status', 2);
-        $tpStatus04 = new Tuple('user', 'status', 3);
+        $tpStatus01 = new Tuple('user', 'status', new Value(0));
+        $tpStatus02 = new Tuple('user', 'status', new Value(1));
+        $tpStatus03 = new Tuple('user', 'status', new Value(2));
+        $tpStatus04 = new Tuple('user', 'status', new Value(3));
 
-        $tpEmail01 = new Tuple('user', 'email', 'email@email.com');
-        $tpEmail02 = new Tuple('user', 'email', null);
+        $tpEmail01 = new Tuple('user', 'email', new Value('email@email.com'));
+        $tpEmail02 = new Tuple('user', 'email', new Value(null));
 
         $builder = new SpecificationBuilder();
 

@@ -4,22 +4,25 @@ namespace TestBucket\Entity;
 
 class TestCase
 {
+    /**
+     * @var int
+     */
     private $id;
 
     /**
-     * @var TestGroup
+     * @var Grouping
      */
-    private $testGroup;
+    private $grouping;
 
     /**
-     * @var TestProperty
+     * @var Property
      */
-    private $testProperty;
+    private $property;
 
     /**
-     * @var TestPropertyValue
+     * @var PropertyValue
      */
-    private $testPropertyValue;
+    private $propertyValue;
 
     /**
      * @return mixed
@@ -30,50 +33,50 @@ class TestCase
     }
 
     /**
-     * @return TestGroup
+     * @return Grouping
      */
-    public function getTestGroup(): TestGroup
+    public function getGrouping(): Grouping
     {
-        return $this->testGroup;
+        return $this->grouping;
     }
 
     /**
-     * @param TestGroup $testGroup
+     * @param Grouping $grouping
      */
-    public function setTestGroup(TestGroup $testGroup): void
+    public function setGrouping(Grouping $grouping): void
     {
-        $this->testGroup = $testGroup;
+        $this->grouping = $grouping;
     }
 
     /**
-     * @return TestProperty
+     * @return Property
      */
-    public function getTestProperty(): TestProperty
+    public function getProperty(): Property
     {
-        return $this->testProperty;
+        return $this->property;
     }
 
     /**
-     * @param TestProperty $testProperty
+     * @param Property $property
      */
-    public function setTestProperty(TestProperty $testProperty): void
+    public function setProperty(Property $property): void
     {
-        $this->testProperty = $testProperty;
+        $this->property = $property;
     }
 
     /**
-     * @return TestPropertyValue
+     * @return PropertyValue
      */
-    public function getTestPropertyValue(): TestPropertyValue
+    public function getPropertyValue(): PropertyValue
     {
-        return $this->testPropertyValue;
+        return $this->propertyValue;
     }
 
     /**
-     * @param TestPropertyValue $testPropertyValue
+     * @param PropertyValue $propertyValue
      */
-    public function setTestPropertyValue(TestPropertyValue $testPropertyValue): void
+    public function setPropertyValue(PropertyValue $propertyValue): void
     {
-        $this->testPropertyValue = $testPropertyValue;
+        $this->propertyValue = $propertyValue;
     }
 }

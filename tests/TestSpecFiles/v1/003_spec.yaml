@@ -1,0 +1,6 @@
+version: 1.0
+group: Order
+property:
+  - name: Buyer
+    type: User
+    value: ~all

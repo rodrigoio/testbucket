@@ -22,6 +22,11 @@ class TestCaseBucketTest extends AbstractTestCase
         }
     }
 
+    public function testSkipThat()
+    {
+        $this->markTestSkipped();
+    }
+
     /*
     public function testSetupTestCaseBucket()
     {
