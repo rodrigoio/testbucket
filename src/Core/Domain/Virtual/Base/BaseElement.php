@@ -6,7 +6,7 @@ namespace TestBucket\Core\Domain\Virtual\Base;
 
 use TestBucket\Core\Domain\Virtual\Contracts\ElementCalculable;
 use TestBucket\Core\Domain\Virtual\Contracts\ElementPrecision;
-use TestBucket\Core\Domain\Virtual\Contracts\AbstractFactory;
+use TestBucket\Core\Domain\Virtual\Contracts\Factory;
 
 class BaseElement implements ElementCalculable
 {
@@ -18,11 +18,11 @@ class BaseElement implements ElementCalculable
     protected $precision;
 
     /**
-     * @var AbstractFactory
+     * @var Factory
      */
     private $abstractFactory;
 
-    public function __construct(AbstractFactory $abstractFactory, $value=null)
+    public function __construct(Factory $abstractFactory, $value=null)
     {
         $this->value = $value;
         $this->setPrecision($abstractFactory->createPrecision());

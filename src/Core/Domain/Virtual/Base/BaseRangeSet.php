@@ -6,7 +6,7 @@ namespace TestBucket\Core\Domain\Virtual\Base;
 
 use TestBucket\Core\Domain\Virtual\Contracts\Range;
 use TestBucket\Core\Domain\Virtual\Contracts\RangeSet;
-use TestBucket\Core\Domain\Virtual\Contracts\AbstractFactory;
+use TestBucket\Core\Domain\Virtual\Contracts\Factory;
 use TestBucket\Core\Domain\Virtual\Contracts\ElementCalculable;
 
 class BaseRangeSet implements RangeSet
@@ -14,7 +14,7 @@ class BaseRangeSet implements RangeSet
     protected $factory;
     protected $domains;
 
-    public function __construct(AbstractFactory $factory)
+    public function __construct(Factory $factory)
     {
         $this->factory = $factory;
         $this->domains = $this->factory->createRangeList();

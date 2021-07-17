@@ -24,11 +24,12 @@ class IntegerRangeIteratorTest extends TestCase
 
     public function testIteration()
     {
-        $list = $this->factory->createRangeList();
+        $factory = $this->factory;
+        $list = $factory->createRangeList();
 
-        $list->add($this->factory->createRange($this->factory->createElement(1), $this->factory->createElement(10)));
-        $list->add($this->factory->createRange($this->factory->createElement(11), $this->factory->createElement(20)));
-        $list->add($this->factory->createRange($this->factory->createElement(21), $this->factory->createElement(30)));
+        $list->add($factory->createRange($factory->createElement(1), $factory->createElement(10)));
+        $list->add($factory->createRange($factory->createElement(11), $factory->createElement(20)));
+        $list->add($factory->createRange($factory->createElement(21), $factory->createElement(30)));
         $iterator = $list->getIterator();
 
         $asserts = [
@@ -37,17 +38,20 @@ class IntegerRangeIteratorTest extends TestCase
             2 => [21, 30],
         ];
 
-        foreach ($iterator as $key=>$item) {
-            $assert = $asserts[$key];
+        while ($iterator->valid()) {
+            $item = $iterator->current();
+            $assert = $asserts[$iterator->key()];
             $this->assertEquals($assert[0], $item->getStartValue()->getValue());
             $this->assertEquals($assert[1], $item->getEndValue()->getValue());
+            $iterator->next();
         }
 
-        // test rewind
-        foreach ($iterator as $key=>$item) {
-            $assert = $asserts[$key];
+        while ($iterator->valid()) {
+            $item = $iterator->current();
+            $assert = $asserts[$iterator->key()];
             $this->assertEquals($assert[0], $item->getStartValue()->getValue());
             $this->assertEquals($assert[1], $item->getEndValue()->getValue());
+            $iterator->next();
         }
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TestBucket\Core\Domain\Virtual\Contracts;
 
-interface AbstractFactory
+interface Factory
 {
     public function createRangeList(): RangeList;
 

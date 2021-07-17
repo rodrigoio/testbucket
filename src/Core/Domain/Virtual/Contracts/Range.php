@@ -6,7 +6,7 @@ namespace TestBucket\Core\Domain\Virtual\Contracts;
 
 interface Range extends Domain
 {
-    public function __construct(ElementCalculable $start, ElementCalculable $end, AbstractFactory $abstractFactory);
+    public function __construct(ElementCalculable $start, ElementCalculable $end, Factory $factory);
 
     public function union(Range $domain) : RangeList;
 

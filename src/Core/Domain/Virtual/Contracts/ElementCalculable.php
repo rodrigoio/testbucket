@@ -6,7 +6,7 @@ namespace TestBucket\Core\Domain\Virtual\Contracts;
 
 interface ElementCalculable
 {
-    public function __construct(AbstractFactory $abstractFactory, $value);
+    public function __construct(Factory $abstractFactory, $value);
 
     public function setPrecision(ElementPrecision $precision): void;
 

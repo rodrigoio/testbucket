@@ -6,7 +6,7 @@ namespace TestBucket\Core\Domain\Virtual\Base;
 
 use TestBucket\Core\Domain\Virtual\Contracts\Range;
 use TestBucket\Core\Domain\Virtual\Contracts\RangeList;
-use TestBucket\Core\Domain\Virtual\Contracts\AbstractFactory;
+use TestBucket\Core\Domain\Virtual\Contracts\Factory;
 use TestBucket\Core\Domain\Virtual\Contracts\ElementCalculable;
 use InvalidArgumentException;
 
@@ -23,11 +23,11 @@ class BaseRange implements Range
     protected $endValue;
 
     /**
-     * @var AbstractFactory
+     * @var Factory
      */
-    protected $abstractFactory;
+    protected $factory;
 
-    public function __construct(ElementCalculable $start, ElementCalculable $end, AbstractFactory $abstractFactory)
+    public function __construct(ElementCalculable $start, ElementCalculable $end, Factory $factory)
     {
         if (!$this->isValid($start, $end)) {
             throw new InvalidArgumentException("Invalid range: [{$start->getValue()}, {$end->getValue()}]");
@@ -35,7 +35,7 @@ class BaseRange implements Range
 
         $this->startValue = $start;
         $this->endValue = $end;
-        $this->abstractFactory = $abstractFactory;
+        $this->factory = $factory;
     }
 
     public function has(ElementCalculable $element) : bool
@@ -113,52 +113,52 @@ class BaseRange implements Range
 
     public function union(Range $outerDomain): RangeList
     {
-        $list = $this->abstractFactory->createRangeList();
+        $list = $this->factory->createRangeList();
 
         if ($this->startsWithLocalDomainEndsWithOuterDomain($outerDomain)) {
             $list->add(
-                $this->abstractFactory->createRange($this->getStartValue(), $outerDomain->getEndValue())
+                $this->factory->createRange($this->getStartValue(), $outerDomain->getEndValue())
             );
             return $list;
         }
 
         if ($this->startsWithOuterDomainEndsWithLocalDomain($outerDomain)) {
             $list->add(
-                $this->abstractFactory->createRange($outerDomain->getStartValue(), $this->getEndValue())
+                $this->factory->createRange($outerDomain->getStartValue(), $this->getEndValue())
             );
             return $list;
         }
 
         if ($this->outerDomainContainsLocalDomain($outerDomain)) {
             $list->add(
-                $this->abstractFactory->createRange($outerDomain->getStartValue(), $outerDomain->getEndValue())
+                $this->factory->createRange($outerDomain->getStartValue(), $outerDomain->getEndValue())
             );
             return $list;
         }
 
         if ($this->localDomainContainsOuterDomain($outerDomain)) {
             $list->add(
-                $this->abstractFactory->createRange($this->getStartValue(), $this->getEndValue())
+                $this->factory->createRange($this->getStartValue(), $this->getEndValue())
             );
             return $list;
         }
 
         if ($this->localDomainTouchesOuterDomainFromTheLeft($outerDomain)) {
             $list->add(
-                $this->abstractFactory->createRange($this->getStartValue(), $outerDomain->getEndValue())
+                $this->factory->createRange($this->getStartValue(), $outerDomain->getEndValue())
             );
             return $list;
         }
 
         if ($this->localDomainTouchesOuterDomainFromTheRight($outerDomain)) {
             $list->add(
-                $this->abstractFactory->createRange($outerDomain->getStartValue(), $this->getEndValue())
+                $this->factory->createRange($outerDomain->getStartValue(), $this->getEndValue())
             );
             return $list;
         }
 
         $list->add(
-            $this->abstractFactory->createRange($this->getStartValue(), $this->getEndValue())
+            $this->factory->createRange($this->getStartValue(), $this->getEndValue())
         );
         $list->add($outerDomain);
 
@@ -167,18 +167,18 @@ class BaseRange implements Range
 
     public function difference(Range $domain) : RangeList
     {
-        $list = $this->abstractFactory->createRangeList();
+        $list = $this->factory->createRangeList();
 
         if ($this->startsWithLocalDomainEndsWithOuterDomain($domain)) {
             $list->add(
-                $this->abstractFactory->createRange($this->getStartValue(), $domain->getStartValue()->prev())
+                $this->factory->createRange($this->getStartValue(), $domain->getStartValue()->prev())
             );
             return $list;
         }
 
         if ($this->startsWithOuterDomainEndsWithLocalDomain($domain)) {
             $list->add(
-                $this->abstractFactory->createRange($domain->getEndValue()->next(), $this->getEndValue())
+                $this->factory->createRange($domain->getEndValue()->next(), $this->getEndValue())
             );
             return $list;
         }
@@ -188,8 +188,8 @@ class BaseRange implements Range
         }
 
         if ($this->localDomainContainsOuterDomain($domain) && !$this->outerDomainContainsLocalDomain($domain)) {
-            $rangeA = $this->abstractFactory->createRange($this->getStartValue(), $domain->getStartValue()->prev());
-            $rangeB = $this->abstractFactory->createRange($domain->getEndValue()->next(), $this->getEndValue());
+            $rangeA = $this->factory->createRange($this->getStartValue(), $domain->getStartValue()->prev());
+            $rangeB = $this->factory->createRange($domain->getEndValue()->next(), $this->getEndValue());
 
             $list->add($rangeA);
             $list->add($rangeB);
@@ -197,7 +197,7 @@ class BaseRange implements Range
         }
 
         $list->add(
-            $this->abstractFactory->createRange($this->getStartValue(), $this->getEndValue())
+            $this->factory->createRange($this->getStartValue(), $this->getEndValue())
         );
         return $list;
     }
