@@ -1,8 +1,8 @@
-docker-up:
+up:
 	@docker-compose up -d
 
-docker-down:
+down:
 	@docker-compose down
 
-test: docker-up
+test: up
 	@docker exec testbucket vendor/bin/phpunit

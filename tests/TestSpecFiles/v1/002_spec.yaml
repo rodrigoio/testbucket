@@ -1,8 +1,8 @@
 version: 1.0
-group: User
-property:
+group: Form02
+properties:
   - name: age
-    type: IntegerRange
-    value: [
-      {start: 18, end: 75}
-    ]
+    type: integer_range
+    value:
+      precision: 1
+      between: {start: 18, end: 80}

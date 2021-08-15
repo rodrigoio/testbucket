@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace TestBucket\Core\Specification;
 
 use Symfony\Component\Yaml\Yaml;
+use TestBucket\Core\Specification\Contracts\Group;
+use TestBucket\Core\Specification\Contracts\SpecificationFactory;
+use TestBucket\Core\Specification\Contracts\Validator;
+use TestBucket\Core\Specification\Contracts\DataQualifierFactory;
 
 class Loader
 {
@@ -13,7 +17,7 @@ class Loader
      */
     private $file;
     /**
-     * @var V1Validator
+     * @var Validator
      */
     private $validator;
     /**
@@ -24,54 +28,54 @@ class Loader
      * @var SpecificationFactory
      */
     private $specificationFactory;
-    /**
-     * @var SpecificationRepository
-     */
-    private $specificationRepository;
 
     public function __construct(
         File $file,
         Validator $validator,
         DataQualifierFactory $dataQualifierFactory,
-        SpecificationFactory $specificationFactory,
-        SpecificationRepository $specificationRepository
+        SpecificationFactory $specificationFactory
     ) {
         $this->file = $file;
         $this->validator = $validator;
         $this->dataQualifierFactory = $dataQualifierFactory;
         $this->specificationFactory = $specificationFactory;
-        $this->specificationRepository = $specificationRepository;
     }
 
-    public function import(): void
+    public function loadData(): Group
     {
         $structure = Yaml::parse($this->file->getContents());
 
         $this->validator->validate($structure);
 
-        $group = $this->specificationFactory->createNewGroup();
-        $group->setName($structure['group']);
+        $group = $this->specificationFactory->createNewGroup($structure['group']);
 
-        array_map(function($propertyArray) use ($group) {
+        foreach ($structure['properties'] as $propertyArray) {
 
-            $qualifier = $this->dataQualifierFactory->createDataQualifier(
-                $propertyArray['type'],
-                $propertyArray['value'],
-                $this->specificationFactory
+            if (empty($propertyArray['value'])) {
+                continue;
+            }
+            $this->appendQualifiedData($propertyArray, $group);
+        }
+        return $group;
+    }
+
+    private function appendQualifiedData($propertyArray, Group $group): void
+    {
+        $group->setProperty($propertyArray['name'], $propertyArray['type']);
+
+        $qualifier = $this->dataQualifierFactory->createDataQualifier(
+            $propertyArray['type'],
+            $propertyArray['value']
+        );
+        $qualifiedData = $qualifier->getOutputData();
+
+        foreach ($qualifiedData as $currentData) {
+
+            $group->addPropertyValue(
+                $propertyArray['name'],
+                $currentData->isValid(),
+                $currentData->getValue()
             );
-
-            $property = $this->specificationFactory->createNewProperty();
-            $property->setName($propertyArray['name']);
-            $property->setType($propertyArray['type']);
-
-            array_map(function($onePropertyValue) use ($property) {
-                $property->addValue($onePropertyValue);
-            }, $qualifier->getOutputData());
-
-            $group->addProperty($property);
-
-        }, $structure['properties']);
-
-        $this->specificationRepository->save($group);
+        }
     }
 }

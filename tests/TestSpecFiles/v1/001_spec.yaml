@@ -1,6 +1,6 @@
 version: 1.0
-group: User
+group: UserForm
 properties:
   - name: name
     type: static
-    value: ["User1", "User2"]
+    value: ["bob", "alice"]
