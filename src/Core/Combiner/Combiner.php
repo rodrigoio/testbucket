@@ -19,9 +19,6 @@ class Combiner
                 $iterator->next();
                 continue;
             }
-
-            $newList->add($oneAggregator);
-            $iterator->next();
         }
 
         return $this->unitaryDistribution($newList, $rightValues);

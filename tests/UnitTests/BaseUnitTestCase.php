@@ -2,8 +2,8 @@
 
 namespace TestBucket\Tests\UnitTests;
 
-use TestBucket\Tests\BaseTestCase;
+use PHPUnit\Framework\TestCase;
 
-class BaseUnitTestCase extends BaseTestCase
+class BaseUnitTestCase extends TestCase
 {
 }

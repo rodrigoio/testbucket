@@ -13,111 +13,88 @@ use TestBucket\Tests\UnitTests\BaseUnitTestCase;
  */
 class AggregatorTest extends BaseUnitTestCase
 {
-    public function testCreate()
+    /** @var Aggregator */
+    private $aggregator;
+    /**
+     * @var Tuple
+     */
+    private $tupleAge, $tupleStatus;
+
+    public function setUp()
     {
-        $aggregator = new Aggregator();
-        $this->assertEquals([], $aggregator->toArray());
+        parent::setUp();
+        $this->aggregator = new Aggregator();
+        $this->tupleAge = new Tuple('group1', 'age', new Value(10));
+        $this->tupleStatus = new Tuple('group1', 'status', new Value(1));
+    }
 
-        $tuple01 = new Tuple('group1', 'age', new Value(10));
-        $tuple02 = new Tuple('group1', 'status', new Value(1));
+    private function setUpWithTuple(Tuple $tuple): void
+    {
+        $this->aggregator = Aggregator::createFromTuple($tuple);
+    }
 
-        $aggregator = Aggregator::createFromTuple($tuple01);
-        $this->assertEquals(['group1:age:(MTA=):1' => $tuple01], $aggregator->toArray());
+    private function setUpWithTuples(array $tuples): void
+    {
+        $this->aggregator = Aggregator::createFromArray($tuples);
+    }
 
-        $aggregator = Aggregator::createFromArray([
-            $tuple01,
-            $tuple02
+    private function assertResult($expected)
+    {
+        $this->assertEquals($expected, $this->aggregator->toArray());
+    }
+
+    public function testEmptyAggregator()
+    {
+        $this->assertResult([]);
+    }
+
+    public function testCreateWithOneTuple()
+    {
+        $this->setUpWithTuple($this->tupleAge);
+
+        $this->assertResult(['group1:age:d3d9446802a44259755d38e6d163e820:1' => $this->tupleAge]);
+    }
+
+    public function testCreateWithTwoTuples()
+    {
+        $this->setUpWithTuples([
+            $this->tupleAge,
+            $this->tupleStatus
         ]);
-        $this->assertEquals(
-            [
-                'group1:age:(MTA=):1' => $tuple01,
-                'group1:status:(MQ==):1' => $tuple02
-            ],
-            $aggregator->toArray()
-        );
 
-        $aggregator = Aggregator::createFromArray([]);
-        $this->assertEquals([], $aggregator->toArray());
+        $this->assertResult([
+            'group1:age:d3d9446802a44259755d38e6d163e820:1' => $this->tupleAge,
+            'group1:status:c4ca4238a0b923820dcc509a6f75849b:1' => $this->tupleStatus
+        ]);
     }
 
     public function testClone()
     {
-        $tuple01 = new Tuple('group1', 'age', new Value(10));
+        $this->setUpWithTuple($this->tupleAge);
 
-        $aggregatorA = Aggregator::createFromTuple($tuple01);
-        $aggregatorB = $aggregatorA->makeClone();
-        $this->assertEquals($aggregatorB->toArray(), $aggregatorA->toArray());
-    }
+        $aggregatorClone = $this->aggregator->makeClone();
 
-    public function testJsonSerialize()
-    {
-        $tuple01 = new Tuple('group1', 'age', new Value(10));
-        $tuple02 = new Tuple('group1', 'status', new Value(1));
-
-        $aggregator = Aggregator::createFromArray([
-            $tuple01,
-            $tuple02
-        ]);
-
-        $data = json_encode($aggregator);
-        $this->assertEquals(
-            [
-                'group1:age:(MTA=):1' => [
-                    'group' => 'group1',
-                    'property' => 'age',
-                    'value' => '10',
-                    'is_valid' => true
-                ],
-                'group1:status:(MQ==):1' => [
-                    'group' => 'group1',
-                    'property' => 'status',
-                    'value' => '1',
-                    'is_valid' => true
-                ]
-            ],
-            json_decode($data, true)
-        );
+        $this->assertResult($aggregatorClone->toArray());
     }
 
     public function testSplitAggregator()
     {
-        $aggregator = new Aggregator();
-        $this->assertEquals([], $aggregator->toArray());
-
-        $tuple01 = new Tuple('group1', 'age', new Value(10));
-        $tuple02 = new Tuple('group1', 'age', new Value(8));
-
-        $aggregator = Aggregator::createFromArray([
-            $tuple01,
-            $tuple02
+        $this->setUpWithTuples([
+            $this->tupleAge,
+            $this->tupleStatus
         ]);
-        $this->assertEquals(
-            [
-                'group1:age:(MTA=):1' => $tuple01,
-                'group1:age:(OA==):1' => $tuple02
-            ],
-            $aggregator->toArray()
-        );
 
-        $aggregatorList = $aggregator->split();
-        $data = json_decode(json_encode($aggregatorList), true);
+        $aggregatorList = $this->aggregator->split();
+        $this->assertEquals(2, $aggregatorList->count());
 
-        $this->assertEquals([
-            "group1:age:(MTA=):1" => [
-                "group" => "group1",
-                "property" => "age",
-                "value" => "10",
-                "is_valid" => "1"
-            ]
-        ], $data[0]);
+        $this->aggregator = $aggregatorList->get(0);
+        $this->assertResult([
+            'group1:age:d3d9446802a44259755d38e6d163e820:1' => $this->tupleAge
+        ]);
 
-        $this->assertEquals([
-            "group1:age:(OA==):1" => [
-                "group" => "group1",
-                "property" => "age",
-                "value" => "8",
-                "is_valid" => "1"
-            ]
-        ], $data[1]);
+        $this->aggregator = $aggregatorList->get(1);
+        $this->assertResult([
+            'group1:status:c4ca4238a0b923820dcc509a6f75849b:1' => $this->tupleStatus
+        ]);
     }
 }

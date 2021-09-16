@@ -36,7 +36,7 @@ use PHPUnit\Framework\TestCase;
 
 use App\Entity\Product;
 
-use TestBucket\Core\Combiner\SpecificationBuilder;
+use TestBucket\Core\Combiner\Builder;
 use TestBucket\Core\Combiner\TestCaseBucket;
 use TestBucket\Core\Combiner\TestCaseReceiverInterface;
 
@@ -48,8 +48,8 @@ class FooTestCase extends TestCase implements TestCaseReceiverInterface
     public function setUp()
     {
         parent::setUp();
-    
-        $spec = new SpecificationBuilder('product');
+
+        $spec = new Builder('product');
         $result = $spec
             ->setGroup('product')
             ->property("name"   , ['product'])
@@ -58,18 +58,18 @@ class FooTestCase extends TestCase implements TestCaseReceiverInterface
             ->property("status" , [1, 2, 3])
             ->property("type"   , [1, 2])
             ->build();
-    
+
         $this->bucket = new TestCaseBucket('products');
         $this->bucket->setReceiver($this);
         $this->bucket->persist($result);
-    
+
         $this->products = [];
     }
-    
+
     // (...)
     // Use populated ( $this->products ) in tests
     // (...)
-    
+
     public function receiveTestCase($testCaseKeys, $testCaseData, $label)
     {
         $data = [];

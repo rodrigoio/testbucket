@@ -1,8 +1,13 @@
-up:
+.PHONY: run stop test
+
+run:
 	@docker-compose up -d
 
-down:
+stop:
 	@docker-compose down
 
-test: up
+test: run
 	@docker exec testbucket vendor/bin/phpunit
+
+phpmetrics: run
+	 @docker exec testbucket vendor/bin/phpmetrics --report-html=tmp/coverage/phpmetrics src/

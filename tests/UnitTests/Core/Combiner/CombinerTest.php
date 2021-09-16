@@ -2,159 +2,232 @@
 
 namespace TestBucket\Test\Core\Combiner;
 
+use PHPUnit\Framework\TestCase;
 use TestBucket\Core\Combiner\Aggregator;
 use TestBucket\Core\Combiner\AggregatorList;
 use TestBucket\Core\Combiner\Combiner;
 use TestBucket\Core\Combiner\Tuple;
 use TestBucket\Core\Combiner\Value;
-use TestBucket\Tests\UnitTests\BaseUnitTestCase;
 
 /**
- * @group combiner
+ * @group combiner_combiner
  */
-class CombinerTest extends BaseUnitTestCase
+class CombinerTest extends TestCase
 {
     /**
-     * @group combine_with_unitary_root
+     * @var Combiner
      */
-    public function testDistributionWithUnitaryRootNode()
+    private $combiner;
+    /**
+     * @var Tuple
+     */
+    private $tupleAge15, $tupleAge50, $tupleAge60, $tupleName, $tupleStatus01, $tupleStatus02;
+    /**
+     * @var AggregatorList
+     */
+    private $leftAggregatorList;
+    /**
+     * @var Aggregator
+     */
+    private $rightAggregator;
+    /**
+     * @var AggregatorList
+     */
+    private $combinationResult;
+
+    public function setUp()
     {
-        $combiner = new Combiner();
-
-        // Samples
-        $tpName = new Tuple('user','name', new Value('John'));
-        $tpAge01 = new Tuple('user','age', new Value(15));
-        $tpAge02 = new Tuple('user','age', new Value(60));
-
-        $possibleNames = AggregatorList::createFromArray([
-            Aggregator::createFromTuple($tpName)
-        ]);
-        $possibleAges = Aggregator::createFromArray([
-            $tpAge01,
-            $tpAge02
-        ]);
-
-        $firstCombination = $combiner->unitaryDistribution($possibleNames, $possibleAges);
-        $combinedData = json_decode(json_encode($firstCombination), true);
-
-        // aggregator 1
-        $this->assertArrayHasKey($tpName->getUniqueKey(), $combinedData[0]);
-        $this->assertArrayHasKey($tpAge01->getUniqueKey(), $combinedData[0]);
-
-        // aggregator 2
-        $this->assertArrayHasKey($tpName->getUniqueKey(), $combinedData[1]);
-        $this->assertArrayHasKey($tpAge02->getUniqueKey(), $combinedData[1]);
-        //
-        $this->assertCount(2, $combinedData);
-
-        // ----------------------------------------------------------------------
-
-        // Samples
-        $tpStatus01 = new Tuple('user','status', new Value(1));
-        $tpStatus02 = new Tuple('user','status', new Value(0));
-
-        // Test increment aggregates
-        $possibleStatuses = Aggregator::createFromArray([
-            $tpStatus01,
-            $tpStatus02
-        ]);
-        $secondCombination = $combiner->unitaryDistribution($firstCombination, $possibleStatuses);
-        $combinedData = json_decode(json_encode($secondCombination), true);
-
-        // aggregator 1
-        $this->assertArrayHasKey($tpName->getUniqueKey(), $combinedData[0]);
-        $this->assertArrayHasKey($tpAge01->getUniqueKey(), $combinedData[0]);
-        $this->assertArrayHasKey($tpStatus01->getUniqueKey(), $combinedData[0]);
-
-        // aggregator 2
-        $this->assertArrayHasKey($tpName->getUniqueKey(), $combinedData[1]);
-        $this->assertArrayHasKey($tpAge01->getUniqueKey(), $combinedData[1]);
-        $this->assertArrayHasKey($tpStatus02->getUniqueKey(), $combinedData[1]);
-
-        // aggregator 3
-        $this->assertArrayHasKey($tpName->getUniqueKey(), $combinedData[2]);
-        $this->assertArrayHasKey($tpAge02->getUniqueKey(), $combinedData[2]);
-        $this->assertArrayHasKey($tpStatus01->getUniqueKey(), $combinedData[2]);
-
-        // aggregator 4
-        $this->assertArrayHasKey($tpName->getUniqueKey(), $combinedData[3]);
-        $this->assertArrayHasKey($tpAge02->getUniqueKey(), $combinedData[3]);
-        $this->assertArrayHasKey($tpStatus02->getUniqueKey(), $combinedData[3]);
-
-        // Total combinations
-        $this->assertCount(4, $combinedData);
+        parent::setUp();
+        $this->combiner = new Combiner();
+        $this->tupleAge15 = new Tuple('user','age', new Value(15));
+        $this->tupleAge50 = new Tuple('user','age', new Value(50));
+        $this->tupleAge60 = new Tuple('user','age', new Value(60));
+        $this->tupleName = new Tuple('user','name', new Value('John'));
+        $this->tupleStatus01 = new Tuple('user','status', new Value(1));
+        $this->tupleStatus02 = new Tuple('user','status', new Value(0));
+        $this->leftAggregatorList = null;
+        $this->rightAggregator = null;
     }
 
-    /**
-     * @group combine_with_multiple_root
-     */
+    private function setUpParameters($tuplesLeft, array $tuplesRight): void
+    {
+        if (is_array($tuplesLeft)) {
+            $this->leftAggregatorList = AggregatorList::createFromArray([
+                Aggregator::createFromArray($tuplesLeft)
+            ]);
+        } else {
+            $this->leftAggregatorList = $tuplesLeft;
+        }
+
+        $this->rightAggregator = Aggregator::createFromArray($tuplesRight);
+    }
+
+    private function assertCombination($expected): void
+    {
+        foreach ($expected as $index=>$expectedAggregator) {
+            $resultData = $this->combinationResult->get($index)->toArray();
+            foreach ($expectedAggregator as $tupleKey)
+                $this->assertArrayHasKey($tupleKey, $resultData);
+        }
+        $this->assertEquals(count($expected), $this->combinationResult->count());
+    }
+
+    private function runUnitaryDistribution(): void
+    {
+        $this->combinationResult = $this->combiner->unitaryDistribution(
+            $this->leftAggregatorList,
+            $this->rightAggregator
+        );
+    }
+
+    private function runDistribution(): void
+    {
+        $this->combinationResult = $this->combiner->distribution(
+            $this->leftAggregatorList,
+            $this->rightAggregator
+        );
+    }
+
+
+    public function testDistributionWithSamePropertyAndUnitaryRoot()
+    {
+        $this->setUpParameters(
+            [
+                $this->tupleAge15 // one root
+            ],
+            [
+                $this->tupleAge50,
+                $this->tupleAge60
+            ]
+        );
+
+        $this->runUnitaryDistribution();
+
+        $this->assertCombination([
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge50->getUniqueKey()
+            ],
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge60->getUniqueKey()
+            ]
+        ]);
+    }
+
+    public function testDistributionWithUnitaryRootUsingTwoSteps()
+    {
+        $this->setUpParameters(
+            [
+                $this->tupleAge15 // one root
+            ],
+            [
+                $this->tupleAge50,
+                $this->tupleAge60
+            ]
+        );
+
+        $this->runUnitaryDistribution();
+
+        $this->assertCombination([
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge50->getUniqueKey()
+            ],
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge60->getUniqueKey()
+            ]
+        ]);
+
+        $this->setUpParameters(
+            $this->combinationResult,
+            [
+                $this->tupleStatus01,
+                $this->tupleStatus02,
+            ]
+        );
+
+        $this->runUnitaryDistribution();
+
+        $this->assertCombination([
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge50->getUniqueKey(),
+                $this->tupleStatus01->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge50->getUniqueKey(),
+                $this->tupleStatus02->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge60->getUniqueKey(),
+                $this->tupleStatus01->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleAge60->getUniqueKey(),
+                $this->tupleStatus02->getUniqueKey(),
+            ]
+        ]);
+    }
+
     public function testDistributionWithMultipleRootNode()
     {
-        $combiner = new Combiner();
+        $this->setUpParameters(
+            [
+                $this->tupleAge15,
+                $this->tupleAge50,
+                $this->tupleAge60,
+            ],
+            [
+                $this->tupleName,
+                $this->tupleStatus01,
+                $this->tupleStatus02,
+            ]
+        );
 
-        $tpStatus01 = new Tuple('user', 'status', new Value('on'));
-        $tpStatus02 = new Tuple('user', 'status', new Value('off'));
-        $tpStatus03 = new Tuple('user', 'status', new Value('inter'));
+        $this->runDistribution();
 
-        $tpPassword01 = new Tuple('user', 'region', new Value('10'));
-        $tpPassword02 = new Tuple('user', 'region', new Value('20'));
-        $tpPassword03 = new Tuple('user', 'region', new Value('30'));
-
-        $aggregatorStatus = Aggregator::createFromArray([
-            $tpStatus01,
-            $tpStatus02,
-            $tpStatus03,
+        $this->assertCombination([
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleName->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleStatus01->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge15->getUniqueKey(),
+                $this->tupleStatus02->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge50->getUniqueKey(),
+                $this->tupleName->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge50->getUniqueKey(),
+                $this->tupleStatus01->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge50->getUniqueKey(),
+                $this->tupleStatus02->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge60->getUniqueKey(),
+                $this->tupleName->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge60->getUniqueKey(),
+                $this->tupleStatus01->getUniqueKey(),
+            ],
+            [
+                $this->tupleAge60->getUniqueKey(),
+                $this->tupleStatus02->getUniqueKey(),
+            ]
         ]);
-        $aggregatorList = AggregatorList::createFromArray([
-            $aggregatorStatus
-        ]);
-
-        $aggregatorPasswordType = Aggregator::createFromArray([
-            $tpPassword01,
-            $tpPassword02,
-            $tpPassword03,
-        ]);
-
-        $combined = $combiner->distribution($aggregatorList, $aggregatorPasswordType);
-        $combinedData = json_decode(json_encode($combined), true);
-
-        // aggregator 1
-        $this->assertArrayHasKey($tpStatus01->getUniqueKey(), $combinedData[0]);
-        $this->assertArrayHasKey($tpPassword01->getUniqueKey(), $combinedData[0]);
-
-        // aggregator 2
-        $this->assertArrayHasKey($tpStatus01->getUniqueKey(), $combinedData[1]);
-        $this->assertArrayHasKey($tpPassword02->getUniqueKey(), $combinedData[1]);
-
-        // aggregator 3
-        $this->assertArrayHasKey($tpStatus01->getUniqueKey(), $combinedData[2]);
-        $this->assertArrayHasKey($tpPassword03->getUniqueKey(), $combinedData[2]);
-
-        // aggregator 4
-        $this->assertArrayHasKey($tpStatus02->getUniqueKey(), $combinedData[3]);
-        $this->assertArrayHasKey($tpPassword01->getUniqueKey(), $combinedData[3]);
-
-        // aggregator 5
-        $this->assertArrayHasKey($tpStatus02->getUniqueKey(), $combinedData[4]);
-        $this->assertArrayHasKey($tpPassword02->getUniqueKey(), $combinedData[4]);
-
-        // aggregator 6
-        $this->assertArrayHasKey($tpStatus02->getUniqueKey(), $combinedData[5]);
-        $this->assertArrayHasKey($tpPassword03->getUniqueKey(), $combinedData[5]);
-
-        // aggregator 7
-        $this->assertArrayHasKey($tpStatus03->getUniqueKey(), $combinedData[6]);
-        $this->assertArrayHasKey($tpPassword01->getUniqueKey(), $combinedData[6]);
-
-        // aggregator 8
-        $this->assertArrayHasKey($tpStatus03->getUniqueKey(), $combinedData[7]);
-        $this->assertArrayHasKey($tpPassword02->getUniqueKey(), $combinedData[7]);
-
-        // aggregator 9
-        $this->assertArrayHasKey($tpStatus03->getUniqueKey(), $combinedData[8]);
-        $this->assertArrayHasKey($tpPassword03->getUniqueKey(), $combinedData[8]);
-
-        // Total combinations
-        $this->assertCount(9, $combinedData);
     }
 }

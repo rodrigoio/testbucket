@@ -19,17 +19,7 @@ class TupleTest extends BaseUnitTestCase
         $this->assertEquals('group01', $tuple->getGroup());
         $this->assertEquals('key01', $tuple->getProperty());
         $this->assertEquals('value99', $tuple->getValue());
-        $this->assertEquals('group01:key01:(dmFsdWU5OQ==):1', $tuple->getUniqueKey());
-
-        $jsonTuple = json_encode($tuple);
-
-        $arrayTupple = [
-            'group' => 'group01',
-            'property' => 'key01',
-            'value' => 'value99',
-            'is_valid' => true,
-        ];
-
-        $this->assertEquals($arrayTupple, json_decode($jsonTuple, true));
+        $this->assertEquals(true, $tuple->isValid());
+        $this->assertEquals('group01:key01:c7e1f73aaf2820fce23887b6cf397164:1', $tuple->getUniqueKey());
     }
 }

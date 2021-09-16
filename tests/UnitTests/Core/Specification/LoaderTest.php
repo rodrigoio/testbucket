@@ -21,26 +21,29 @@ class LoaderTest extends BaseUnitTestCase
         parent::tearDown();
     }
 
-    private function getLoader($fileName): Loader
+    private function getLoader(): Loader
     {
-        $fullPath =
-            getcwd() . DIRECTORY_SEPARATOR .
-            'tests' . DIRECTORY_SEPARATOR .
-            'TestSpecFiles' . DIRECTORY_SEPARATOR .
-            $fileName;
-
         return new Loader(
-            new File($fullPath),
             new V1Validator(),
             new DataQualifierFactory(),
             new SpecificationFactory()
         );
     }
 
+    private function getFile($fileName): File
+    {
+        return new File(
+            getcwd() . DIRECTORY_SEPARATOR .
+            'tests' . DIRECTORY_SEPARATOR .
+            'TestSpecFiles' . DIRECTORY_SEPARATOR .
+            $fileName
+        );
+    }
+
     public function testLoadSpecFileWithStaticValue()
     {
-        $loader = $this->getLoader('v1/001_spec.yaml');
-        $group = $loader->loadData();
+        $loader = $this->getLoader();
+        $group = $loader->loadData($this->getFile('v1/001_spec_with_static_field.yaml'));
 
         $this->assertInstanceOf(Group::class, $group);
         $this->assertEquals('UserForm', $group->getName());
@@ -56,8 +59,8 @@ class LoaderTest extends BaseUnitTestCase
 
     public function testLoadSpecFileWithIntegerRangeValues()
     {
-        $loader = $this->getLoader('v1/002_spec.yaml');
-        $group = $loader->loadData();
+        $loader = $this->getLoader();
+        $group = $loader->loadData($this->getFile('v1/002_spec_with_integer_range.yaml'));
 
         $this->assertInstanceOf(Group::class, $group);
         $this->assertEquals('Form02', $group->getName());
