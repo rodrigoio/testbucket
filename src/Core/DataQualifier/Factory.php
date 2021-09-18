@@ -2,10 +2,10 @@
 
 namespace TestBucket\Core\DataQualifier;
 
-use TestBucket\Core\Specification\DataQualifier;
-use TestBucket\Core\Specification\DataQualifierFactory;
-use TestBucket\Core\Specification\SpecificationFactory;
 use InvalidArgumentException;
+use TestBucket\Core\BoundaryValue\Virtual\Integer\IntegerFactory;
+use TestBucket\Core\Specification\Contracts\DataQualifier;
+use TestBucket\Core\Specification\Contracts\DataQualifierFactory;
 
 class Factory implements DataQualifierFactory
 {
@@ -15,6 +15,7 @@ class Factory implements DataQualifierFactory
     {
         $this->map = [
             'static' => new StaticQualifier(),
+            'integer_range' => new IntegerLimitValueQualifier(new IntegerFactory()),
         ];
     }
 
@@ -26,10 +27,10 @@ class Factory implements DataQualifierFactory
         return $this->map[$type];
     }
 
-    public function createDataQualifier(string $type, array $data, SpecificationFactory $factory): DataQualifier
+    public function createDataQualifier(string $type, array $data): DataQualifier
     {
         $qualifier = $this->getDataQualifier($type);
-        $qualifier->setInputData($data, $factory);
+        $qualifier->setInputData($data);
         return $qualifier;
     }
 }

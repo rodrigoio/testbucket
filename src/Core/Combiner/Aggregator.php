@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace TestBucket\Core\Combiner;
 
 use ArrayObject;
-use JsonSerializable;
+use InvalidArgumentException;
 
-class Aggregator implements JsonSerializable
+class Aggregator
 {
     private $id;
     private $tuples;
@@ -23,7 +23,7 @@ class Aggregator implements JsonSerializable
         $aggregator = new Aggregator();
 
         if (empty($tuples)) {
-            return $aggregator;
+            throw new InvalidArgumentException("Invalid empty field");
         }
 
         foreach ($tuples as $oneTuple) {
@@ -68,10 +68,5 @@ class Aggregator implements JsonSerializable
     public function makeClone()
     {
         return Aggregator::createFromArray((array) $this->tuples);
-    }
-
-    public function jsonSerialize()
-    {
-        return $this->tuples;
     }
 }

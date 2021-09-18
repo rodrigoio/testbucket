@@ -1,0 +1,8 @@
+version: 1.0
+group: Form02
+properties:
+  - name: age
+    type: integer_range
+    value:
+      precision: 1
+      between: {start: 18, end: 80}

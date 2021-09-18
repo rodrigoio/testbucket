@@ -20,8 +20,7 @@ class Value
      */
     public function getValue()
     {
-        $value = null !== $this->value ? (string) $this->value : null;
-        return $value;
+        return null !== $this->value ? (string) $this->value : null;
     }
 
     /**

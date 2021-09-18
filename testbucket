@@ -20,19 +20,6 @@ use Symfony\Component\Console\Application;
 use TestBucket\Command\Bucket\GenerateCommand;
 use TestBucket\Command\Bucket\CleanUpCommand;
 
-/*
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
-
-$isDevMode = true;
-$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
-
-$entityManager = EntityManager::create([
-    'driver' => 'pdo_sqlite',
-    'path' => getenv('TESTBUCKET_DIR'),
-], $config);
-*/
-
 $application = new Application();
 $application->add(new GenerateCommand());
 $application->add(new CleanUpCommand());

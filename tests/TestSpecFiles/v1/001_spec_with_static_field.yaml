@@ -1,0 +1,6 @@
+version: 1.0
+group: UserForm
+properties:
+  - name: name
+    type: static
+    value: ["bob", "alice"]

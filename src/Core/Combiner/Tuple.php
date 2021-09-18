@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace TestBucket\Core\Combiner;
 
-use JsonSerializable;
-
-class Tuple implements JsonSerializable
+class Tuple
 {
     private $group;
     private $property;
     private $value;
     private $valid;
 
-    /**
-     * @deprecated rename $key to property
-     */
     public function __construct(string $group, string $property, Value $value)
     {
         $this->group = $group;
@@ -26,9 +21,8 @@ class Tuple implements JsonSerializable
 
     public function getUniqueKey()
     {
-        $encodedValue = null !== $this->value ? base64_encode($this->value) : $this->value;
-
-        return $this->group . ':' . $this->property . ':(' . $encodedValue . '):' . (int) $this->valid;
+        $encodedValue = null !== $this->value ? md5($this->value) : $this->value;
+        return $this->group . ':' . $this->property . ':' . $encodedValue . ':' . (int) $this->valid;
     }
 
     public function getGroup(): string
@@ -49,15 +43,5 @@ class Tuple implements JsonSerializable
     public function isValid(): bool
     {
         return $this->valid;
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'group' => $this->group,
-            'property' => $this->property,
-            'value' => $this->value,
-            'is_valid' => $this->valid,
-        ];
     }
 }

@@ -1,8 +1,14 @@
-docker-up:
+.PHONY: build test run stop
+APPNAME = testbucket
+
+build:
+	@docker build -t ${APPNAME} -f Dockerfile .
+
+test:
+	@docker run -it --rm --name ${APPNAME}-test ${APPNAME} vendor/bin/phpunit
+
+run:
 	@docker-compose up -d
 
-docker-down:
+stop:
 	@docker-compose down
-
-test: docker-up
-	@docker exec testbucket vendor/bin/phpunit
