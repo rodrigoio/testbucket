@@ -17,14 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build Image
-        run: |
-          docker build . -t testbucket-image
-
-      - name: Start Container
-        run: |
-          docker run -d --rm --name testbucket-container testbucket-image
-
       - name: Run tests
         run: |
-          docker exec testbucket-container vendor/bin/phpunit
+          make test

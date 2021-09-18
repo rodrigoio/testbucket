@@ -3,8 +3,8 @@
 namespace TestBucket\Core\Controller;
 
 use TestBucket\Core\Repository\TestCaseRepository;
+use TestBucket\Core\Specification\Contracts\File;
 use TestBucket\Core\Specification\Domain\Factory as SpecificationFactory;
-use TestBucket\Core\Specification\File;
 use TestBucket\Core\Specification\Loader;
 
 class CombinerController

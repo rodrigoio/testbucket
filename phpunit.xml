@@ -9,13 +9,6 @@
          processIsolation="false"
          stopOnFailure="false"
          cacheResult="false">
-
-    <php>
-        <env name="TEST_SPEC_V2" value="/code/tests/TestSpecFiles/v2"/>
-        <env name="TESTBUCKET_DIR" value="/code/tmp/bucket/test.db.sqlite"/>
-        <env name="ENTITY_PATH_DIR" value="/code/config/xml"/>
-    </php>
-
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">tests</directory>

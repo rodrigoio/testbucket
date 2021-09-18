@@ -5,7 +5,7 @@ namespace TestBucket\Tests\UnitTests\Core\Specification;
 use TestBucket\Core\DataQualifier\Factory as DataQualifierFactory;
 use TestBucket\Core\Specification\Contracts\Group;
 use TestBucket\Core\Specification\Domain\Factory as SpecificationFactory;
-use TestBucket\Core\Specification\File;
+use TestBucket\Core\IO\FileReader;
 use TestBucket\Core\Specification\Loader;
 use TestBucket\Core\Specification\V1Validator;
 use TestBucket\Tests\UnitTests\BaseUnitTestCase;
@@ -30,9 +30,9 @@ class LoaderTest extends BaseUnitTestCase
         );
     }
 
-    private function getFile($fileName): File
+    private function getFile($fileName): FileReader
     {
-        return new File(
+        return new FileReader(
             getcwd() . DIRECTORY_SEPARATOR .
             'tests' . DIRECTORY_SEPARATOR .
             'TestSpecFiles' . DIRECTORY_SEPARATOR .

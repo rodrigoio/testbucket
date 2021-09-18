@@ -9,6 +9,7 @@ use TestBucket\Core\Specification\Contracts\Group;
 use TestBucket\Core\Specification\Contracts\SpecificationFactory;
 use TestBucket\Core\Specification\Contracts\Validator;
 use TestBucket\Core\Specification\Contracts\DataQualifierFactory;
+use TestBucket\Core\Specification\Contracts\File;
 
 class Loader
 {

@@ -1,10 +1,11 @@
 <?php
 
-namespace TestBucket\Core\Specification;
+namespace TestBucket\Core\IO;
 
+use TestBucket\Core\Specification\Contracts\File;
 use InvalidArgumentException;
 
-class File
+class FileReader implements File
 {
     private $path;
 

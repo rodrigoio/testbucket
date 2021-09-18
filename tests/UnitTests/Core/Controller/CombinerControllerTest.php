@@ -6,11 +6,11 @@ use TestBucket\Core\Combiner\Factory as CombinerFactory;
 use TestBucket\Core\Controller\CombinationService;
 use TestBucket\Core\Controller\CombinerController;
 use TestBucket\Core\DataQualifier\Factory as DataQualifierFactory;
+use TestBucket\Core\IO\FileReader;
 use TestBucket\Core\IO\FileWriter;
 use TestBucket\Core\Repository\CSVRepository;
 use TestBucket\Core\Repository\TestCaseRepository;
 use TestBucket\Core\Specification\Domain\Factory as SpecificationFactory;
-use TestBucket\Core\Specification\File;
 use TestBucket\Core\Specification\Loader;
 use TestBucket\Core\Specification\V1Validator;
 use TestBucket\Tests\UnitTests\BaseUnitTestCase;
@@ -94,14 +94,14 @@ class CombinerControllerTest extends BaseUnitTestCase
 
     public function testGenerateTestCasesWithTwoStaticFieldsAndSaveCSVFile()
     {
-        $path = getcwd() . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'file.txt';
+        $path = DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'file.txt';
 
         $this->stubRepository = new CSVRepository(new FileWriter($path));
         $this->setUpControllerAssertingRepositorySave();
 
         $this->controller->generateTestCasesFrom($this->getFile('v1/002_spec_with_integer_range.yaml'));
 
-        $contents = (new File($path))->getContents();
+        $contents = (new FileReader($path))->getContents();
         $contents = explode("\n", $contents);
         $this->assertEquals(
             [
@@ -136,9 +136,9 @@ class CombinerControllerTest extends BaseUnitTestCase
         $this->assertEquals($expected, $output);
     }
 
-    private function getFile($fileName): File
+    private function getFile($fileName): FileReader
     {
-        return new File(
+        return new FileReader(
             getcwd() . DIRECTORY_SEPARATOR .
             'tests' . DIRECTORY_SEPARATOR .
             'TestSpecFiles' . DIRECTORY_SEPARATOR .
