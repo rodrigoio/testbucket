@@ -4,13 +4,19 @@ TestBucket is a tool that aims to assist the testing process by generating funct
 
 ### About
 TestBucket is a tool aims to generate test cases from the definition of a specification in YAML notation.
-This specification aims to determine input domains, correlation between fields in a form.
+This specification aims to determine input domains and correlation between fields in a form.
 
 Once we have a specification in a concrete and not subjective way, we can apply several known techniques of
 software tests to generate test cases. The scope of this project is limited, for now, to generate integrated
 tests not having a direct relationship with the application code, but with the specification.
 
-Consider contributing to this project.
+Consider contributing to this project with code :nerd_face:; or thoughts and ideas :monocle_face: !
+<br>
+
+
+### Working on... :hammer_and_wrench:
+* New data types
+* New combiner algorithm
 <br>
 
 ### Useful commands:
@@ -66,7 +72,9 @@ docker run -it --rm --name testbucket-run -v "$PWD":/tmp testbucket ./testbucket
 <br>
 
 #### Expected Data
-Each line is a json object that defines a `TestCase` with properties and if its valid or not.
+Each line is a json object that defines a `TestCase` with properties and if its valid or not, and all values are encoded in base64.
+This example only shows valid test cases: `is_valid=true`
+
 ```
 {"group_name":"UserForm","properties":{"name":"Ym9i","surname":"cmVk"},"is_valid":true}
 {"group_name":"UserForm","properties":{"name":"Ym9i","surname":"Z3JlZW4="},"is_valid":true}
