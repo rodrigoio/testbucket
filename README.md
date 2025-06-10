@@ -1,23 +1,39 @@
-## Test Bucket
+# Test Bucket
 TestBucket is a tool that aims to assist the testing process by generating functional test cases.
 <br>
 
-### About
-TestBucket is a tool aims to generate test cases from the definition of a specification in YAML notation.
-This specification aims to determine input domains and correlation between fields in a form.
+## About
+TestBucket aims to generate test cases based on specification using YAML notation.
+The specification determine input domains and correlation between fields in a form.
 
-Once we have a specification in a concrete and not subjective way, we can apply several known techniques of
-software tests to generate test cases. The scope of this project is limited, for now, to generate integrated
+Once we have a specification in a concrete and not subjective way, we can apply several known techniques to generate test cases.
+The scope of this project is limited, for now, to generate integrated
 tests not having a direct relationship with the application code, but with the specification.
 
-Consider contributing to this project with code :nerd_face:; or thoughts and ideas :monocle_face: !
+Write an yaml specification with all you expect and the testbucket will generate all other cases for you!
+
+## Contribute!
+Consider contributing to this project!
+
+We are working on an official channel, until then make a comment or open an issue to interact.
 <br>
 
 
-### Working on... :hammer_and_wrench:
-* New data types
-* New combiner algorithm
+## Project Steps
+Check out the development stages of this project:
+
+| phases        | Status |
+|---------------|--------|
+| Config Loader | Done |
+| Combine engine | Don |
+| Range data types | Done |
+| API | Pending |
+| Docker pipeline | Pending |
+| Types (text, dates, others) | Pending |
+| Official Documentation | Pending |
 <br>
+
+## Running the development environment
 
 ### Useful commands:
 ```shell script
